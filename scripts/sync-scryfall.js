@@ -3,7 +3,7 @@
  * BigDeckApp Scryfall Sync Utility
  * Fetches and caches card data from the Scryfall API
  * 
- * Note: Requires Node.js 18+ for native fetch API
+ * Note: Requires Node.js 18+ for native fetch API (Node.js 20 used in this project)
  */
 
 const db = require('../database/connection');

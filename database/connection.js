@@ -11,7 +11,9 @@ require('dotenv').config();
 // Database configuration
 const config = {
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
+  ssl: process.env.DATABASE_SSL === 'true' ? {
+    rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
+  } : false,
   max: parseInt(process.env.DATABASE_POOL_MAX, 10) || 20,
   idleTimeoutMillis: parseInt(process.env.DATABASE_IDLE_TIMEOUT, 10) || 30000,
   connectionTimeoutMillis: parseInt(process.env.DATABASE_CONNECTION_TIMEOUT, 10) || 2000,
@@ -59,10 +61,10 @@ async function getClient() {
   const originalQuery = client.query.bind(client);
   const release = client.release.bind(client);
 
-  // Set a timeout of 5 seconds, after which we will release the client
+  // Set a timeout of 5 seconds, after which we log a warning
   const timeout = setTimeout(() => {
     console.error('A client has been checked out for more than 5 seconds!');
-    console.error('The last executed query was:');
+    console.error('The last executed query was:', client.lastQuery);
   }, 5000);
 
   // Monkey patch the query method to track the last query
