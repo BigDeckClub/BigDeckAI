@@ -51,8 +51,10 @@ class MetaAnalyzer {
     
     // Decks with lower meta share might be emerging
     const lowShareDecks = metaDecks.filter(d => {
-      const share = parseFloat(d.metaShare);
-      return share > 0 && share < 5;
+      // Parse meta share, handling formats like "5.2%" or just "5.2"
+      const shareStr = String(d.metaShare || '0').replace('%', '').trim();
+      const share = parseFloat(shareStr);
+      return !isNaN(share) && share > 0 && share < 5;
     });
     
     if (lowShareDecks.length > 0) {

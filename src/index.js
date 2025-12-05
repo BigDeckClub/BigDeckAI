@@ -320,7 +320,7 @@ program
         if (summary.deckAvailable) {
           console.log(chalk.green(`\n✓ Full decklist available (${summary.cardCount} cards)`));
         } else {
-          console.log(chalk.yellow(`\nℹ ${knowledge.notes}`));
+          console.log(chalk.yellow(`\nℹ ${knowledge.note || knowledge.notes || 'Limited information available'}`));
         }
         
         console.log(chalk.green('\n✓ Learning complete!\n'));

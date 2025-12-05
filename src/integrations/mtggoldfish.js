@@ -58,8 +58,11 @@ class MTGGoldfishAPI {
    * @returns {Object} Parsed deck data
    */
   parseDeckHTML(html) {
-    // Simple regex-based parsing (for demonstration)
-    // In production, consider using a proper HTML parser like cheerio or jsdom
+    // Note: This uses basic regex parsing for demonstration
+    // For production use, consider using a proper HTML parser library like:
+    // - cheerio: npm install cheerio
+    // - jsdom: npm install jsdom
+    // These provide more reliable and maintainable HTML parsing
     
     const deck = {
       commander: null,

@@ -190,16 +190,21 @@ class RecommendationEngine {
 
   /**
    * Suggest budget substitutions
+   * Note: This feature requires pricing data integration (TCGPlayer, CardKingdom, etc.)
+   * Currently returns a placeholder structure
    * @param {Array} cardList - List of expensive cards
-   * @returns {Array} Budget alternatives
+   * @returns {Object} Placeholder response
    */
   suggestBudgetSubstitutions(cardList) {
-    // This would integrate with pricing data in a full implementation
-    return cardList.map(card => ({
-      original: card,
-      budget: `Budget alternative for ${card}`,
-      savings: 'Varies',
-    }));
+    // TODO: Integrate with pricing API to provide real budget alternatives
+    return {
+      note: 'Budget substitution feature requires pricing data integration',
+      suggestion: 'This will be available once TCGPlayer or CardKingdom API integration is added',
+      placeholder: cardList.map(card => ({
+        original: card,
+        needsPricingData: true,
+      })),
+    };
   }
 
   /**

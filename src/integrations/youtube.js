@@ -131,8 +131,8 @@ class YouTubeAPI {
 
   /**
    * Extract deck information from YouTube video
-   * Note: Full transcript extraction requires YouTube API key or third-party service
-   * This is a basic implementation that works with video metadata
+   * Note: Full transcript extraction requires YouTube Data API v3 key
+   * This basic implementation works with publicly available metadata only
    * @param {string} url - YouTube URL
    * @returns {Promise<Object>} Extracted deck information
    */
@@ -143,24 +143,27 @@ class YouTubeAPI {
       throw new Error('Invalid YouTube URL');
     }
     
-    // Get video metadata
+    // Get video metadata using oEmbed (no API key required)
     const metadata = await this.getVideoMetadata(videoId);
     
-    // In a production implementation, you would:
-    // 1. Use YouTube Data API v3 to get video description
-    // 2. Use a transcript service to extract captions
-    // 3. Parse both for deck information
+    // Note: To enable full functionality, you would need to:
+    // 1. Add YouTube Data API v3 key to get video description and tags
+    // 2. Integrate a transcript service (e.g., youtube-transcript library)
+    // 3. Parse both description and transcript for deck information
     
-    // For now, we'll return a structure that can be populated
     return {
       videoId,
       title: metadata.title,
       author: metadata.author_name,
       thumbnail: metadata.thumbnail_url,
-      deckLinks: [], // Would be populated from description
-      commander: null, // Would be extracted from title/description
-      strategy: null, // Would be extracted from analysis
-      notes: 'Note: Full deck extraction requires YouTube Data API key',
+      deckLinks: [], // Populated with YouTube Data API
+      commander: null, // Extracted from title/description/transcript
+      strategy: null, // Analyzed from content
+      note: 'Full deck extraction requires YouTube Data API v3 key',
+      capabilities: {
+        current: 'Basic metadata extraction via oEmbed',
+        withApiKey: 'Full description parsing, deck link extraction, transcript analysis',
+      },
     };
   }
 

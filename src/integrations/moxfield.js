@@ -4,8 +4,6 @@
  * Documentation: https://api.moxfield.com/v2/docs
  */
 
-import { config } from './config.js';
-
 class MoxfieldAPI {
   constructor() {
     this.baseUrl = 'https://api.moxfield.com/v2';
