@@ -59,6 +59,7 @@
   "files": [
     "index.js",
     "examples.js",
+    "NPM_MODULE.md",
     "src/",
     "README.md",
     "LICENSE"
