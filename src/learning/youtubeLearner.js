@@ -134,7 +134,10 @@ class YouTubeLearner {
   importKnowledge(json) {
     try {
       const data = JSON.parse(json);
-      this.knowledgeBase = Array.isArray(data) ? data : [];
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid knowledge data: expected an array');
+      }
+      this.knowledgeBase = data;
     } catch (error) {
       throw new Error(`Failed to import knowledge: ${error.message}`);
     }

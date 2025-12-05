@@ -43,7 +43,7 @@ export function createLearnFromYouTubeTool() {
         if (summary.deckAvailable) {
           output += `\nFull decklist available (${summary.cardCount} cards)\n`;
         } else {
-          output += `\nNote: ${knowledge.notes}\n`;
+          output += `\nNote: ${knowledge.note}\n`;
           output += `Decklist may be linked in video description or comments\n`;
         }
         

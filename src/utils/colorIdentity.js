@@ -145,6 +145,15 @@ export function calculateColorDistribution(deck) {
 }
 
 /**
+ * Get color name from symbol
+ * @param {string} color - Color symbol (W, U, B, R, G)
+ * @returns {string} Color name
+ */
+export function getColorName(color) {
+  return COLORS[color] || color;
+}
+
+/**
  * Get recommended mana base colors
  * @param {Object} distribution - Color distribution from calculateColorDistribution
  * @returns {Object} Recommended land counts by color
@@ -201,6 +210,7 @@ export default {
   getColorIdentityString,
   isValidForCommander,
   getColorCombinationName,
+  getColorName,
   calculateColorDistribution,
   getRecommendedManaBase,
   validateDeckColorIdentity,

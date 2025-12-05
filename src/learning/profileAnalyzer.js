@@ -5,6 +5,7 @@
 
 import { moxfield } from '../integrations/moxfield.js';
 import { mtggoldfish } from '../integrations/mtggoldfish.js';
+import { getColorName } from '../utils/colorIdentity.js';
 
 class ProfileAnalyzer {
   /**
@@ -130,7 +131,7 @@ class ProfileAnalyzer {
       const unplayedColors = allColors.filter(c => !playedColors.has(c));
       
       if (unplayedColors.length > 0) {
-        recommendations.push(`Try exploring ${unplayedColors.map(c => this.colorName(c)).join(' or ')} colors`);
+        recommendations.push(`Try exploring ${unplayedColors.map(c => getColorName(c)).join(' or ')} colors`);
       }
     }
     
@@ -167,33 +168,9 @@ class ProfileAnalyzer {
    * @returns {string} Formatted color name
    */
   formatColorIdentity(colors) {
-    const colorNames = {
-      'W': 'White',
-      'U': 'Blue',
-      'B': 'Black',
-      'R': 'Red',
-      'G': 'Green',
-    };
-    
     if (!colors) return 'Colorless';
     
-    return colors.split('').map(c => colorNames[c] || c).join('/');
-  }
-
-  /**
-   * Get single color name
-   * @param {string} color - Color letter
-   * @returns {string} Color name
-   */
-  colorName(color) {
-    const names = {
-      'W': 'White',
-      'U': 'Blue',
-      'B': 'Black',
-      'R': 'Red',
-      'G': 'Green',
-    };
-    return names[color] || color;
+    return colors.split('').map(c => getColorName(c)).join('/');
   }
 
   /**

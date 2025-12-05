@@ -136,7 +136,7 @@ class MoxfieldAPI {
       
       // Track color combinations
       if (deck.colorIdentity && deck.colorIdentity.length > 0) {
-        const colorCombo = deck.colorIdentity.sort().join('');
+        const colorCombo = [...deck.colorIdentity].sort().join('');
         colors[colorCombo] = (colors[colorCombo] || 0) + 1;
       }
       

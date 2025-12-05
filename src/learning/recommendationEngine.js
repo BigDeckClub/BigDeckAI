@@ -3,6 +3,8 @@
  * Enhanced recommendations using profile analysis and learning data
  */
 
+import { getColorName } from '../utils/colorIdentity.js';
+
 class RecommendationEngine {
   constructor() {
     this.userHistory = [];
@@ -41,7 +43,7 @@ class RecommendationEngine {
       
       // Count colors
       if (deck.colors) {
-        const colorKey = deck.colors.sort().join('');
+        const colorKey = [...deck.colors].sort().join('');
         colors[colorKey] = (colors[colorKey] || 0) + 1;
       }
     });
@@ -96,10 +98,9 @@ class RecommendationEngine {
 
   /**
    * Identify gaps in user's deck building
-   * @param {Object} profileAnalysis - Analysis from profile analyzer
    * @returns {Array} Suggestions for unexplored areas
    */
-  identifyGaps(profileAnalysis) {
+  identifyGaps() {
     const gaps = [];
     const history = this.analyzeHistory();
     
@@ -116,7 +117,7 @@ class RecommendationEngine {
       gaps.push({
         type: 'colors',
         description: `Haven't explored: ${unplayedColors.join(', ')}`,
-        suggestion: `Try building with ${unplayedColors[0]} (${this.colorName(unplayedColors[0])})`,
+        suggestion: `Try building with ${unplayedColors[0]} (${getColorName(unplayedColors[0])})`,
       });
     }
     
@@ -148,7 +149,7 @@ class RecommendationEngine {
   generateRecommendations(options = {}) {
     const history = this.analyzeHistory();
     const staples = this.identifyStaples();
-    const gaps = this.identifyGaps(options.profileAnalysis || {});
+    const gaps = this.identifyGaps();
     
     const recommendations = {
       buildOnStrengths: [],
@@ -212,8 +213,7 @@ class RecommendationEngine {
    * @returns {Object} Archetype suggestion
    */
   suggestNewArchetype() {
-    const history = this.analyzeHistory();
-    const gaps = this.identifyGaps({});
+    const gaps = this.identifyGaps();
     
     if (gaps.length > 0) {
       return {
@@ -226,22 +226,6 @@ class RecommendationEngine {
       archetype: 'Try something completely different',
       reason: 'Expand your deck building repertoire',
     };
-  }
-
-  /**
-   * Get color name
-   * @param {string} color - Color letter
-   * @returns {string} Color name
-   */
-  colorName(color) {
-    const names = {
-      'W': 'White',
-      'U': 'Blue',
-      'B': 'Black',
-      'R': 'Red',
-      'G': 'Green',
-    };
-    return names[color] || color;
   }
 
   /**
@@ -266,7 +250,10 @@ class RecommendationEngine {
   importHistory(json) {
     try {
       const data = JSON.parse(json);
-      this.userHistory = Array.isArray(data) ? data : [];
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid history data: expected an array');
+      }
+      this.userHistory = data;
     } catch (error) {
       throw new Error(`Failed to import history: ${error.message}`);
     }

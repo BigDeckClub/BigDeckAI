@@ -4,7 +4,6 @@
  */
 
 import { mtggoldfish } from '../integrations/mtggoldfish.js';
-import { moxfield } from '../integrations/moxfield.js';
 
 class MetaAnalyzer {
   /**
