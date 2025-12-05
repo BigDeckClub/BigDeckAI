@@ -11,6 +11,11 @@ import {
   createSearchInventoryTool,
   createGetCardInfoTool,
   createValidateDeckTool,
+  createAnalyzeMoxfieldProfileTool,
+  createAnalyzeMTGGoldfishProfileTool,
+  createLearnFromYouTubeTool,
+  createSuggestDeckTechsTool,
+  createAnalyzeMetaTool,
 } from './tools/index.js';
 
 /**
@@ -40,6 +45,11 @@ export class DeckBuilderAgent {
       createSearchInventoryTool(),
       createGetCardInfoTool(),
       createValidateDeckTool(),
+      createAnalyzeMoxfieldProfileTool(),
+      createAnalyzeMTGGoldfishProfileTool(),
+      createLearnFromYouTubeTool(),
+      createSuggestDeckTechsTool(),
+      createAnalyzeMetaTool(),
     ];
 
     // Pull the ReAct prompt from LangChain Hub or use default
