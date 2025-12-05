@@ -2,8 +2,52 @@
   "name": "bigdeck-ai",
   "version": "1.0.0",
   "description": "AI-powered Commander deck building agent",
-  "main": "src/index.js",
+  "main": "index.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./agent": {
+      "import": "./src/agent/DeckBuilderAgent.js"
+    },
+    "./tools": {
+      "import": "./src/agent/tools/index.js"
+    },
+    "./prompts": {
+      "import": "./src/agent/prompts/systemPrompt.js"
+    },
+    "./integrations/config": {
+      "import": "./src/integrations/config.js"
+    },
+    "./integrations/scryfall": {
+      "import": "./src/integrations/scryfall.js"
+    },
+    "./integrations/groq": {
+      "import": "./src/integrations/groq.js"
+    },
+    "./knowledge/commanderRules": {
+      "import": "./src/knowledge/commanderRules.js"
+    },
+    "./knowledge/archetypes": {
+      "import": "./src/knowledge/archetypes.js"
+    },
+    "./knowledge/deckStructure": {
+      "import": "./src/knowledge/deckStructure.js"
+    },
+    "./knowledge/staples": {
+      "import": "./src/knowledge/staples.js"
+    },
+    "./utils/colorIdentity": {
+      "import": "./src/utils/colorIdentity.js"
+    },
+    "./utils/curveAnalysis": {
+      "import": "./src/utils/curveAnalysis.js"
+    },
+    "./utils/manabase": {
+      "import": "./src/utils/manabase.js"
+    }
+  },
   "bin": {
     "bigdeck": "./src/index.js"
   },
@@ -12,6 +56,22 @@
     "chat": "node src/index.js chat",
     "build": "node src/index.js build"
   },
+  "files": [
+    "index.js",
+    "examples.js",
+    "NPM_MODULE.md",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BigDeckClub/BigDeckApp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BigDeckClub/BigDeckApp/issues"
+  },
+  "homepage": "https://github.com/BigDeckClub/BigDeckApp#readme",
   "keywords": [
     "mtg",
     "magic-the-gathering",
@@ -19,10 +79,15 @@
     "edh",
     "ai",
     "deck-builder",
-    "langchain"
+    "langchain",
+    "npm-module",
+    "library"
   ],
   "author": "BigDeckClub",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@langchain/core": "^0.3.0",
     "@langchain/groq": "^0.1.0",

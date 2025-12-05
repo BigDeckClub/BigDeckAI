@@ -31,6 +31,7 @@ export class DeckBuilderAgent {
   async initialize() {
     // Create LLM instance (Groq by default)
     this.llm = createGroqLLM({
+      apiKey: this.options.apiKey,
       temperature: this.options.temperature || 0.7,
       streaming: this.options.streaming || false,
     });
