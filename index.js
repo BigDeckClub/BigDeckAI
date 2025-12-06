@@ -4,6 +4,16 @@
  * A lightweight library providing MTG Commander knowledge, utilities,
  * and OpenAI-compatible tool schemas for AI-powered deck building.
  * 
+ * ## Structure
+ * This library is organized into several major sections:
+ * - **System Prompts & Personas**: AI communication styles and system instructions
+ * - **Knowledge Base**: Commander rules, archetypes, staples, synergies
+ * - **Learning & Recommendations**: ML-based recommendations, meta analysis
+ * - **Utilities**: Deck analysis, validation, and optimization tools
+ * - **Tool Schemas**: OpenAI function calling schemas
+ * - **Tool Handlers**: Implementation of tool functions
+ * - **Integrations**: Scryfall, EDHREC, Archidekt, TCGPlayer
+ * 
  * @example
  * // Import system prompt
  * import { systemPrompt } from 'bigdeck-ai';
@@ -16,7 +26,13 @@
  * 
  * // Import tool schemas for OpenAI function calling
  * import { allToolSchemas } from 'bigdeck-ai';
+ * 
+ * @module bigdeck-ai
  */
+
+// =============================================================================
+// SYSTEM PROMPTS & PERSONAS
+// =============================================================================
 
 // System Prompt
 export { 
@@ -32,6 +48,10 @@ export {
   getPersonaRecommendations,
   getAllPersonas
 } from './src/prompts/personas.js';
+
+// =============================================================================
+// KNOWLEDGE BASE
+// =============================================================================
 
 // Knowledge Base
 export { 
@@ -65,6 +85,10 @@ export {
   findInfiniteCombos
 } from './src/knowledge/synergies.js';
 
+// =============================================================================
+// LEARNING & RECOMMENDATIONS
+// =============================================================================
+
 // Learning Modules
 export { profileAnalyzer } from './src/learning/profileAnalyzer.js';
 export { youtubeLearner } from './src/learning/youtubeLearner.js';
@@ -89,6 +113,10 @@ export {
   getGameHistory,
   clearGameHistory
 } from './src/learning/playgroupMeta.js';
+
+// =============================================================================
+// UTILITIES
+// =============================================================================
 
 // Utilities
 export { 
@@ -162,6 +190,19 @@ export {
   getInteractionReport
 } from './src/utils/interactionAnalysis.js';
 
+// Deck Validator
+export {
+  parseDeckList,
+  validateParsedDeck,
+  validateDeckList,
+  removeDuplicates,
+  formatDeckList
+} from './src/utils/deckValidator.js';
+
+// =============================================================================
+// TOOL SCHEMAS (OpenAI Function Calling)
+// =============================================================================
+
 // Tool Schemas (OpenAI function calling)
 export {
   allToolSchemas,
@@ -199,6 +240,10 @@ export {
   getSalesSchema
 } from './src/tools/schemas.js';
 
+// =============================================================================
+// TOOL HANDLERS
+// =============================================================================
+
 // Tool Handlers (implementations)
 export {
   toolHandlers,
@@ -216,6 +261,10 @@ export {
   getSales
 } from './src/tools/handlers.js';
 
+// =============================================================================
+// DATA & UI
+// =============================================================================
+
 // Data Store
 export { store } from './src/data/store.js';
 
@@ -226,6 +275,10 @@ export {
   getRandomThinkingMessage,
   getToolStatusMessage
 } from './src/ui/messages.js';
+
+// =============================================================================
+// INTEGRATIONS
+// =============================================================================
 
 // Integrations
 export { 

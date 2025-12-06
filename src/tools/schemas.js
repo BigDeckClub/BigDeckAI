@@ -344,7 +344,7 @@ export const addCardToDeckSchema = {
         },
         quantity: {
           type: "number",
-          description: "Number of copies to add (default: 1)"
+          description: "Number of copies to add (default: 1). Note: Commander/EDH format is singleton - only 1 copy allowed except basic lands. Other formats may allow up to 4 copies."
         }
       },
       required: ["deckName", "cardName"]

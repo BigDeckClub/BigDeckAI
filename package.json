@@ -27,6 +27,7 @@
     "./utils/deckAnalysis": "./src/utils/deckAnalysis.js",
     "./utils/winConditions": "./src/utils/winConditions.js",
     "./utils/interactionAnalysis": "./src/utils/interactionAnalysis.js",
+    "./utils/deckValidator": "./src/utils/deckValidator.js",
     "./tools/schemas": "./src/tools/schemas.js",
     "./integrations/scryfall": "./src/integrations/scryfall.js",
     "./integrations/edhrec": "./src/integrations/edhrec.js",
@@ -39,14 +40,20 @@
     "README.md",
     "LICENSE"
   ],
+  "scripts": {
+    "lint": "node -e \"console.log('No linter configured yet')\"",
+    "test": "node -e \"console.log('No tests configured yet')\"",
+    "validate": "node -e \"import('./index.js').then(() => console.log('✓ Module exports validated')).catch(e => { console.error('✗ Validation failed:', e.message); process.exit(1); })\"",
+    "prepublishOnly": "npm run validate"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BigDeckClub/BigDeckApp.git"
+    "url": "git+https://github.com/BigDeckClub/BigDeckAI.git"
   },
   "bugs": {
-    "url": "https://github.com/BigDeckClub/BigDeckApp/issues"
+    "url": "https://github.com/BigDeckClub/BigDeckAI/issues"
   },
-  "homepage": "https://github.com/BigDeckClub/BigDeckApp#readme",
+  "homepage": "https://github.com/BigDeckClub/BigDeckAI#readme",
   "keywords": [
     "mtg",
     "magic-the-gathering",
