@@ -4,13 +4,39 @@ A lightweight JavaScript library providing comprehensive Magic: The Gathering Co
 
 ## ✨ Features
 
-- **Commander Format Knowledge**: Complete rules, ban list, archetypes, deck structure guidelines, and format staples
-- **Deck Building Utilities**: Color identity validation, mana curve analysis, and mana base calculations
-- **Learning Modules**: Profile analysis, YouTube deck tech extraction, and meta analysis
-- **OpenAI Function Calling**: Ready-to-use tool schemas for AI function calling
-- **Scryfall Integration**: Card search and pricing via the free Scryfall API
-- **Zero Dependencies**: Only requires `dotenv` and `zod` for optional configuration
+### Core Knowledge Base
+- **Commander Format Knowledge**: Complete rules, ban list, archetypes (20+ including new variants), deck structure guidelines, and format staples
+- **Synergy Database**: Card interaction mapping with combo detection and synergy scoring
+- **Expanded Archetypes**: Chaos, Voltron variants (Equipment/Aura/Counters), Landfall, Blink, Wheels, Tokens, and detailed Tribal sub-types
+
+### Advanced Analysis Tools
+- **Power Level Assessment**: Comprehensive 1-10 scale rating with detailed factor breakdown (fast mana, tutors, interaction, mana base quality)
+- **Deck Ratio Analysis**: Card draw, ramp, and interaction ratios with archetype-specific recommendations
+- **Win Condition Detection**: Identify combat, combo, alternate, and attrition win conditions with redundancy assessment
+- **Interaction Scoring**: Evaluate removal, counterspells, protection, and graveyard hate packages
+- **Mana Curve Analysis**: Detailed curve visualization and optimization suggestions
+
+### Smart Recommendations
+- **ML-Based Recommender**: Similarity-based recommendations using deck feature extraction
+- **Budget Optimizer**: Budget-aware suggestions with price comparisons and alternatives across multiple tiers
+- **Playgroup Meta Adaptation**: Learn from game results and adapt to local meta
+- **Synergy Suggestions**: AI-powered card suggestions based on existing deck synergies
+
+### Integrations
+- **Scryfall**: Card search and pricing via the free Scryfall API
+- **EDHREC**: Popular cards, themes, synergy scores, and salt ratings (stub implementation)
+- **Archidekt**: Deck import and search functionality (stub implementation)
+- **TCGPlayer**: Alternative pricing source with price history and trends (stub implementation)
+
+### AI Enhancement
+- **Persona System**: Adaptive communication styles (Beginner, Intermediate, Advanced, Competitive, Casual)
+- **Chain-of-Thought Reasoning**: Structured 4-phase deck building approach
+- **OpenAI Function Calling**: 20+ ready-to-use tool schemas for AI function calling
+
+### Developer Experience
 - **TypeScript Friendly**: JSDoc annotations throughout
+- **Minimal Dependencies**: Only requires `dotenv` and `zod`
+- **Comprehensive Exports**: Granular subpath imports for tree-shaking
 
 ## 🚀 Installation
 
@@ -255,6 +281,368 @@ console.log(recommendations);
 // ]
 ```
 
+## 🆕 New Features & Examples
+
+### Power Level Assessment
+
+```javascript
+import { assessPowerLevel, suggestPowerLevelAdjustments } from 'bigdeck-ai';
+
+// Assess deck power level
+const assessment = assessPowerLevel(decklist);
+console.log(assessment);
+// {
+//   score: 7,
+//   tier: 'optimized',
+//   confidence: 'high',
+//   factors: {
+//     avgCMC: 3.2,
+//     fastManaCount: 5,
+//     tutorCount: 6,
+//     interactionCount: 12,
+//     comboCount: 2,
+//     manaBase: { quality: 'high', premiumCount: 8 }
+//   }
+// }
+
+// Get suggestions to adjust power level
+const adjustments = suggestPowerLevelAdjustments(decklist, 8);
+console.log(adjustments.suggestions);
+```
+
+### Synergy Detection
+
+```javascript
+import { findSynergyPairs, suggestSynergyCards, findInfiniteCombos } from 'bigdeck-ai';
+
+// Find synergy pairs in deck
+const pairs = findSynergyPairs(decklist);
+console.log(pairs);
+// [
+//   {
+//     card1: 'Doubling Season',
+//     card2: 'Planeswalker',
+//     categories: ['planeswalkers', 'tokens'],
+//     description: 'Doubles loyalty counters'
+//   }
+// ]
+
+// Detect infinite combos
+const combos = findInfiniteCombos(decklist);
+console.log(combos);
+// [
+//   {
+//     mainCard: 'Thassa\'s Oracle',
+//     pieces: ['Demonic Consultation'],
+//     description: 'Exile library, win on ETB'
+//   }
+// ]
+
+// Suggest synergistic cards
+const suggestions = suggestSynergyCards(decklist, 5);
+```
+
+### Budget Optimization
+
+```javascript
+import { 
+  calculateDeckCost, 
+  suggestWithBudget, 
+  findBudgetAlternatives 
+} from 'bigdeck-ai';
+
+// Calculate total deck cost
+const cost = calculateDeckCost(decklist);
+console.log(cost);
+// {
+//   total: 456.78,
+//   mostExpensive: [...],
+//   averageCardPrice: 4.57
+// }
+
+// Get budget suggestions
+const budgetSuggestions = suggestWithBudget(decklist, 'moderate');
+console.log(budgetSuggestions);
+// {
+//   currentCost: 456.78,
+//   targetBudget: 300,
+//   suggestions: [
+//     {
+//       replace: 'Mana Crypt',
+//       currentPrice: 150,
+//       alternatives: [
+//         { name: 'Sol Ring', reason: 'Similar fast mana' }
+//       ]
+//     }
+//   ]
+// }
+
+// Find budget alternatives for specific card
+const alternatives = findBudgetAlternatives('Mana Crypt', 5);
+```
+
+### Deck Analysis
+
+```javascript
+import { 
+  analyzeCardAdvantage, 
+  analyzeRampPackage, 
+  suggestRatioImprovements 
+} from 'bigdeck-ai';
+
+// Analyze card draw
+const drawAnalysis = analyzeCardAdvantage(decklist);
+console.log(drawAnalysis);
+// {
+//   count: 10,
+//   cardDraw: 8,
+//   impulseDraw: 2,
+//   quality: 'good',
+//   rating: 8
+// }
+
+// Analyze ramp
+const rampAnalysis = analyzeRampPackage(decklist);
+console.log(rampAnalysis);
+// {
+//   count: 12,
+//   manaRocks: 8,
+//   manaDorks: 2,
+//   landRamp: 2,
+//   quality: 'excellent'
+// }
+
+// Get ratio improvement suggestions
+const suggestions = suggestRatioImprovements(decklist, 'midrange', ['W', 'U', 'B']);
+```
+
+### Win Condition Detection
+
+```javascript
+import { 
+  detectWinConditions, 
+  assessWinConRedundancy, 
+  suggestWinConditions 
+} from 'bigdeck-ai';
+
+// Detect all win conditions
+const wincons = detectWinConditions(decklist);
+console.log(wincons);
+// {
+//   found: [
+//     { type: 'combat', name: 'Craterhoof Behemoth' },
+//     { type: 'combo', name: 'Thassa\'s Oracle + Consultation' }
+//   ],
+//   count: 5,
+//   hasSufficientWincons: true
+// }
+
+// Assess redundancy
+const redundancy = assessWinConRedundancy(decklist);
+console.log(redundancy);
+// {
+//   rating: 'good',
+//   totalWincons: 5,
+//   uniqueTypes: 3,
+//   message: 'Good win condition diversity'
+// }
+
+// Suggest win conditions
+const suggestions = suggestWinConditions(decklist, 'combo', ['U', 'B']);
+```
+
+### Interaction Analysis
+
+```javascript
+import { 
+  analyzeInteraction, 
+  scoreInteractionPackage, 
+  getInteractionReport 
+} from 'bigdeck-ai';
+
+// Analyze interaction
+const interaction = analyzeInteraction(decklist);
+console.log(interaction);
+// {
+//   total: 15,
+//   breakdown: {
+//     spotRemoval: 8,
+//     boardWipes: 3,
+//     counterspells: 4
+//   }
+// }
+
+// Score interaction package
+const score = scoreInteractionPackage(decklist);
+console.log(score);
+// {
+//   score: 8,
+//   rating: 'excellent',
+//   total: 15
+// }
+
+// Get comprehensive report
+const report = getInteractionReport(decklist, ['W', 'U', 'B']);
+```
+
+### ML-Based Recommendations
+
+```javascript
+import { 
+  findSimilarDecks, 
+  recommendFromSimilarDecks, 
+  extractDeckFeatures 
+} from 'bigdeck-ai';
+
+// Find similar decks
+const similarDecks = findSimilarDecks(myDeck, deckDatabase, 10);
+console.log(similarDecks);
+// [
+//   {
+//     deck: { name: 'Similar Deck', ... },
+//     similarity: 0.85,
+//     colorMatch: true
+//   }
+// ]
+
+// Get recommendations from similar decks
+const recommendations = recommendFromSimilarDecks(myDeck, deckDatabase, 10);
+console.log(recommendations);
+// [
+//   {
+//     name: 'Recommended Card',
+//     appearances: 8,
+//     reason: 'Found in 8 similar decks'
+//   }
+// ]
+```
+
+### Playgroup Meta Adaptation
+
+```javascript
+import { 
+  recordGameResult, 
+  analyzePlaygroupMeta, 
+  suggestMetaCounters 
+} from 'bigdeck-ai';
+
+// Record game results
+recordGameResult({
+  deckUsed: 'Atraxa Superfriends',
+  result: 'win',
+  turns: 9,
+  opponentCommanders: ['Korvold', 'Kinnan', 'Tymna & Thrasios'],
+  notes: 'Combo decks were prevalent'
+});
+
+// Analyze playgroup meta
+const meta = analyzePlaygroupMeta();
+console.log(meta);
+// {
+//   profile: {
+//     powerLevel: 8,
+//     commonStrategies: ['combo', 'control'],
+//     frequentCommanders: [...],
+//     comboFrequency: 'high'
+//   }
+// }
+
+// Get meta-specific tech suggestions
+const counters = suggestMetaCounters(meta.profile, 5);
+console.log(counters);
+// [
+//   {
+//     name: 'Rule of Law',
+//     reason: 'Slows down storm and combo',
+//     relevance: 'high'
+//   }
+// ]
+```
+
+### Persona System
+
+```javascript
+import { 
+  personas, 
+  getPersonaPrompt, 
+  detectUserLevel, 
+  getPersonaRecommendations 
+} from 'bigdeck-ai';
+
+// Get persona-specific prompt
+const prompt = getPersonaPrompt('competitive');
+console.log(prompt);
+// Returns customized system prompt for cEDH focus
+
+// Detect user expertise level
+const level = detectUserLevel(conversationHistory);
+console.log(level); // 'beginner', 'intermediate', 'advanced', 'competitive', 'casual'
+
+// Get persona recommendations
+const recommendations = getPersonaRecommendations('beginner');
+console.log(recommendations);
+// {
+//   budgetTier: 'budget',
+//   powerLevel: 5,
+//   avoidComplexCombos: true,
+//   includeExplanations: true
+// }
+```
+
+### EDHREC Integration
+
+```javascript
+import { 
+  getCommanderData, 
+  getPopularCards, 
+  getSaltScore, 
+  getThemes 
+} from 'bigdeck-ai';
+
+// Get commander data (stub implementation)
+const commanderData = await getCommanderData('Atraxa, Praetors\' Voice');
+console.log(commanderData.themes);
+console.log(commanderData.topCards);
+
+// Get salt score
+const saltScore = await getSaltScore('Cyclonic Rift');
+console.log(saltScore);
+// {
+//   card: 'Cyclonic Rift',
+//   saltScore: 2.94,
+//   rating: 'salty'
+// }
+```
+
+### TCGPlayer Pricing
+
+```javascript
+import { 
+  getTCGPlayerPrice, 
+  comparePrices, 
+  getPriceHistory 
+} from 'bigdeck-ai';
+
+// Get TCGPlayer price (stub implementation)
+const price = await getTCGPlayerPrice('Sol Ring');
+console.log(price);
+
+// Compare prices across platforms
+const comparison = await comparePrices('Mana Crypt');
+console.log(comparison);
+// {
+//   sources: {
+//     tcgplayer: { low: 145, mid: 165, high: 185 },
+//     scryfall: { low: 142, mid: 168, high: 190 }
+//   },
+//   bestPrice: { source: 'TCGPlayer', price: 145 }
+// }
+
+// Get price history
+const history = await getPriceHistory('Rhystic Study', 90);
+console.log(history.trend); // 'rising', 'falling', or 'stable'
+```
+
 ## 📦 Module Exports
 
 ### Subpath Imports
@@ -262,37 +650,60 @@ console.log(recommendations);
 You can import specific modules using subpath exports:
 
 ```javascript
-// System prompt
+// System prompts
 import { systemPrompt } from 'bigdeck-ai/prompts';
+import { personas, getPersonaPrompt } from 'bigdeck-ai/prompts/personas';
 
 // Knowledge modules
 import { commanderRules } from 'bigdeck-ai/knowledge/commanderRules';
 import { archetypes } from 'bigdeck-ai/knowledge/archetypes';
 import { deckStructure } from 'bigdeck-ai/knowledge/deckStructure';
 import { staples } from 'bigdeck-ai/knowledge/staples';
+import { synergies, findSynergyPairs } from 'bigdeck-ai/knowledge/synergies';
 
 // Learning modules
 import { profileAnalyzer } from 'bigdeck-ai/learning/profileAnalyzer';
 import { youtubeLearner } from 'bigdeck-ai/learning/youtubeLearner';
 import { metaAnalyzer } from 'bigdeck-ai/learning/metaAnalyzer';
 import { recommendationEngine } from 'bigdeck-ai/learning/recommendationEngine';
+import { findSimilarDecks } from 'bigdeck-ai/learning/mlRecommender';
+import { analyzePlaygroupMeta } from 'bigdeck-ai/learning/playgroupMeta';
 
 // Utilities
 import { parseColorIdentity } from 'bigdeck-ai/utils/colorIdentity';
 import { calculateManaCurve } from 'bigdeck-ai/utils/curveAnalysis';
 import { generateManaBase } from 'bigdeck-ai/utils/manabase';
+import { assessPowerLevel } from 'bigdeck-ai/utils/powerLevel';
+import { suggestWithBudget } from 'bigdeck-ai/utils/budgetOptimizer';
+import { analyzeCardAdvantage } from 'bigdeck-ai/utils/deckAnalysis';
+import { detectWinConditions } from 'bigdeck-ai/utils/winConditions';
+import { analyzeInteraction } from 'bigdeck-ai/utils/interactionAnalysis';
 
 // Tool schemas
 import { allToolSchemas } from 'bigdeck-ai/tools/schemas';
 
 // Integrations
 import { scryfall } from 'bigdeck-ai/integrations/scryfall';
+import { getCommanderData } from 'bigdeck-ai/integrations/edhrec';
+import { fetchDeck } from 'bigdeck-ai/integrations/archidekt';
+import { getTCGPlayerPrice } from 'bigdeck-ai/integrations/tcgplayer';
 ```
 
 ## 🛠️ OpenAI Function Calling Schemas
 
 The library includes ready-to-use OpenAI function calling schemas:
 
+### Analysis Tools (New)
+- `assess_power_level` - Analyze deck power level (1-10 scale)
+- `find_synergies` - Find card synergies and combos
+- `suggest_with_budget` - Budget-aware recommendations
+- `analyze_deck_ratios` - Card draw/ramp ratio analysis
+- `detect_win_conditions` - Find win conditions
+- `analyze_interaction` - Evaluate removal and interaction
+- `get_edhrec_data` - EDHREC lookup
+- `adapt_to_playgroup` - Playgroup meta adaptation
+
+### Original Tools
 - `search_scryfall` - Search for MTG cards
 - `get_card_price` - Get card prices
 - `validate_deck` - Validate Commander deck legality
@@ -325,28 +736,51 @@ const response = await openai.chat.completions.create({
 
 ```
 bigdeck-ai/
-├── index.js                    # Main exports
-├── package.json                # Minimal dependencies
-├── README.md                   # This file
+├── index.js                         # Main exports
+├── package.json                     # Minimal dependencies
+├── README.md                        # This file
 ├── src/
 │   ├── prompts/
-│   │   └── systemPrompt.js     # AI system prompt
+│   │   ├── systemPrompt.js          # AI system prompt with chain-of-thought
+│   │   └── personas.js              # Persona system (Beginner to cEDH)
 │   ├── knowledge/
-│   │   ├── archetypes.js       # Deck archetypes
-│   │   ├── commanderRules.js   # Format rules & ban list
-│   │   ├── deckStructure.js    # Deck building guidelines
-│   │   └── staples.js          # Format staples by color
+│   │   ├── archetypes.js            # 20+ deck archetypes with variants
+│   │   ├── commanderRules.js        # Format rules & ban list
+│   │   ├── deckStructure.js         # Deck building guidelines
+│   │   ├── staples.js               # Format staples by color
+│   │   └── synergies.js             # Card synergy database & combos
 │   ├── learning/
-│   │   ├── metaAnalyzer.js     # Format meta analysis
-│   │   ├── profileAnalyzer.js  # User profile analysis
+│   │   ├── metaAnalyzer.js          # Format meta analysis
+│   │   ├── profileAnalyzer.js       # User profile analysis
 │   │   ├── recommendationEngine.js  # Personalized recommendations
-│   │   └── youtubeLearner.js   # YouTube video learning
+│   │   ├── youtubeLearner.js        # YouTube video learning
+│   │   ├── mlRecommender.js         # ML-based similarity engine
+│   │   └── playgroupMeta.js         # Playgroup meta adaptation
 │   ├── tools/
-│   │   └── schemas.js          # OpenAI function calling schemas
+│   │   ├── schemas.js               # 20+ OpenAI function calling schemas
+│   │   └── handlers.js              # Tool implementations
 │   ├── utils/
-│   │   ├── colorIdentity.js    # Color identity validation
-│   │   ├── curveAnalysis.js    # Mana curve analysis
-│   │   └── manabase.js         # Mana base calculations
+│   │   ├── colorIdentity.js         # Color identity validation
+│   │   ├── curveAnalysis.js         # Mana curve analysis
+│   │   ├── manabase.js              # Mana base calculations
+│   │   ├── powerLevel.js            # Power level assessment (1-10)
+│   │   ├── budgetOptimizer.js       # Budget-aware suggestions
+│   │   ├── deckAnalysis.js          # Draw/ramp ratio analysis
+│   │   ├── winConditions.js         # Win condition detection
+│   │   └── interactionAnalysis.js   # Interaction package scoring
+│   ├── integrations/
+│   │   ├── config.js                # Configuration
+│   │   ├── scryfall.js              # Scryfall API wrapper
+│   │   ├── moxfield.js              # Moxfield API client
+│   │   ├── mtggoldfish.js           # MTGGoldfish scraper
+│   │   ├── youtube.js               # YouTube parser
+│   │   ├── edhrec.js                # EDHREC integration (stub)
+│   │   ├── archidekt.js             # Archidekt integration (stub)
+│   │   ├── tcgplayer.js             # TCGPlayer pricing (stub)
+│   │   └── bigDeckApi.js            # BigDeck API client
+│   └── data/
+│       └── store.js                 # Data persistence
+```
 │   └── integrations/
 │       ├── config.js           # Configuration
 │       ├── scryfall.js         # Scryfall API wrapper
