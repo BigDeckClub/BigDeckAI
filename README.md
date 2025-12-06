@@ -1,56 +1,26 @@
-# 🃏 BigDeck AI - Commander Deck Builder
+# 🃏 BigDeck AI - MTG Commander Knowledge & Utilities Library
 
-An AI-powered Magic: The Gathering Commander/EDH deck building agent using LangChain and Groq (free, fast LLM API).
-
-**Now available as an npm module!** Import directly into your frontend or API projects.
+A lightweight JavaScript library providing comprehensive Magic: The Gathering Commander knowledge, utilities, and OpenAI-compatible tool schemas for AI-powered deck building applications.
 
 ## ✨ Features
 
-- **AI-Powered Deck Building**: Leverages advanced LLMs to create optimized Commander decks
-- **Commander Format Expertise**: Built-in knowledge of Commander rules, ban list, and deck building theory
-- **Scryfall Integration**: Access to complete Magic card database via free Scryfall API
-- **Interactive CLI**: User-friendly command-line interface with multiple modes
-- **NPM Module**: Import and use in frontend apps, API servers, or any JavaScript/Node.js project
-- **Archetype Support**: Understands aggro, control, combo, tribal, superfriends, and more
-- **Budget Awareness**: Can build decks within specified budget constraints
-- **Profile Analysis**: Learn from Moxfield and MTGGoldfish user profiles to personalize recommendations
-- **YouTube Learning**: Extract deck strategies from Magic YouTube videos and deck techs
-- **Meta Analysis**: Track popular commanders, strategies, and format trends
-- **Enhanced Recommendations**: AI learns from your build history and preferences
-- **Inventory Integration**: (Future) Connect to BigDeckAppV3 to build from your collection
-- **Multiple LLM Providers**: Default Groq (free), with OpenAI/Anthropic/Ollama support
+- **Commander Format Knowledge**: Complete rules, ban list, archetypes, deck structure guidelines, and format staples
+- **Deck Building Utilities**: Color identity validation, mana curve analysis, and mana base calculations
+- **Learning Modules**: Profile analysis, YouTube deck tech extraction, and meta analysis
+- **OpenAI Function Calling**: Ready-to-use tool schemas for AI function calling
+- **Scryfall Integration**: Card search and pricing via the free Scryfall API
+- **Zero Dependencies**: Only requires `dotenv` and `zod` for optional configuration
+- **TypeScript Friendly**: JSDoc annotations throughout
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Node.js 18+** (check with `node --version`)
-- **Groq API Key** (free, get it at [console.groq.com](https://console.groq.com))
-
-### Installation
-
-#### As a CLI Tool
+## 🚀 Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/BigDeckClub/BigDeckApp.git
-cd BigDeckApp
-
-# Install dependencies
-npm install
-
-# Configure environment variables
-cp .env.example .env
-# Edit .env and add your GROQ_API_KEY
+npm install github:BigDeckClub/BigDeckApp
 ```
 
-#### As an npm Module
+Or add to your `package.json`:
 
-```bash
-# Install from GitHub
-npm install github:BigDeckClub/BigDeckApp
-
-# Or add to package.json
+```json
 {
   "dependencies": {
     "bigdeck-ai": "github:BigDeckClub/BigDeckApp"
@@ -58,560 +28,438 @@ npm install github:BigDeckClub/BigDeckApp
 }
 ```
 
-### Getting a Free Groq API Key
-
-1. Visit [https://console.groq.com](https://console.groq.com)
-2. Sign up for a free account
-3. Navigate to API Keys section
-4. Create a new API key
-5. Copy the key to your `.env` file or pass it programmatically
-
 ## 📖 Usage
 
-### As an npm Module
-
-Import BigDeck AI into your frontend or backend applications:
+### Basic Imports
 
 ```javascript
-import { DeckBuilderAgent, createDeckBuilderAgent } from 'bigdeck-ai';
+// Import system prompt for AI agents
+import { systemPrompt } from 'bigdeck-ai';
 
-// Create agent instance
-const agent = await createDeckBuilderAgent({
-  apiKey: process.env.GROQ_API_KEY,
-  temperature: 0.7
-});
+// Import knowledge base
+import { isCardBanned, archetypes, staples } from 'bigdeck-ai';
 
-// Build a deck
-const deckResponse = await agent.buildDeck(
-  'Build a budget cEDH Atraxa superfriends deck under $500'
-);
-console.log(deckResponse);
+// Import utilities
+import { validateDeckColorIdentity, calculateManaCurve } from 'bigdeck-ai';
 
-// Interactive chat
-const { output, history } = await agent.chat(
-  'What are the best card draw options in these colors?',
-  []
-);
-console.log(output);
+// Import OpenAI function calling schemas
+import { allToolSchemas } from 'bigdeck-ai';
 ```
 
-#### Advanced Module Usage
+### Using with OpenAI Function Calling
 
 ```javascript
-// Import specific utilities
-import {
-  commanderRules,
-  archetypes,
-  parseColorIdentity,
-  calculateManaCurve,
-  generateManaBase,
-  scryfall,
-  getEssentialStaples
-} from 'bigdeck-ai';
+import OpenAI from 'openai';
+import { systemPrompt, allToolSchemas } from 'bigdeck-ai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const response = await openai.chat.completions.create({
+  model: "gpt-4-turbo-preview",
+  messages: [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: "Build me a Muldrotha graveyard deck" }
+  ],
+  tools: allToolSchemas,
+  tool_choice: "auto"
+});
+```
+
+### Commander Rules & Ban List
+
+```javascript
+import { commanderRules, isCardBanned } from 'bigdeck-ai';
 
 // Check if a card is banned
-const isBanned = commanderRules.bannedCards.includes('Flash');
+const banned = isCardBanned('Flash'); // true
+
+// Get all banned cards
+console.log(commanderRules.bannedCards);
+// ['Ancestral Recall', 'Balance', 'Biorhythm', ...]
+
+// Access format rules
+console.log(commanderRules.deckSize); // 100
+console.log(commanderRules.startingLife); // 40
+console.log(commanderRules.commanderDamage); // 21
+```
+
+### Deck Archetypes
+
+```javascript
+import { archetypes, getArchetype, getArchetypesForColors } from 'bigdeck-ai';
+
+// Get specific archetype
+const combo = getArchetype('combo');
+console.log(combo.description);
+console.log(combo.strategy);
+console.log(combo.keyCards);
+
+// Get archetypes for color combination
+const azorius = getArchetypesForColors('WU');
+console.log(azorius); // ['control', 'superfriends', ...]
+```
+
+### Color Identity Validation
+
+```javascript
+import { 
+  parseColorIdentity, 
+  validateDeckColorIdentity,
+  isValidForCommander 
+} from 'bigdeck-ai';
 
 // Parse color identity
 const colors = parseColorIdentity('WUB'); // ['W', 'U', 'B']
 
-// Get staples for colors
-const staplesWUB = getEssentialStaples('WUB');
+// Validate deck color identity
+const validation = validateDeckColorIdentity(
+  'Atraxa, Praetors\' Voice', // WUBG
+  ['Sol Ring', 'Lightning Bolt'] // Bolt has R, invalid!
+);
 
-// Fetch card data from Scryfall
-const card = await scryfall.getCard('Atraxa, Praetors\' Voice');
-
-// Analyze mana curve
-const curveAnalysis = calculateManaCurve(deckList);
+console.log(validation.isValid); // false
+console.log(validation.violations);
 ```
 
-#### Subpath Imports
-
-You can also import specific modules using subpath exports:
+### Mana Curve Analysis
 
 ```javascript
-// Import agent directly
-import { DeckBuilderAgent } from 'bigdeck-ai/agent';
+import { calculateManaCurve, analyzeManaCurve } from 'bigdeck-ai';
 
-// Import tools
-import { createGetCardInfoTool } from 'bigdeck-ai/tools';
+const deck = [
+  { name: 'Sol Ring', cmc: 1 },
+  { name: 'Counterspell', cmc: 2 },
+  { name: 'Cultivate', cmc: 3 },
+  // ... more cards
+];
 
-// Import system prompt
+const curve = calculateManaCurve(deck);
+console.log(curve);
+// { 0: 0, 1: 5, 2: 12, 3: 15, 4: 10, 5: 8, 6: 5, '7+': 3 }
+
+const analysis = analyzeManaCurve(deck, 'midrange');
+console.log(analysis.avgCMC);
+console.log(analysis.recommendations);
+```
+
+### Mana Base Generation
+
+```javascript
+import { generateManaBase, calculateLandCount } from 'bigdeck-ai';
+
+const landCount = calculateLandCount(3.2, 'midrange'); // 37 lands
+
+const manaBase = generateManaBase('WUB', landCount);
+console.log(manaBase);
+// {
+//   basics: { W: 4, U: 5, B: 4 },
+//   duals: ['Hallowed Fountain', 'Watery Grave', ...],
+//   fetches: ['Polluted Delta', 'Flooded Strand', ...],
+//   utility: ['Command Tower', 'Exotic Orchard', ...]
+// }
+```
+
+### Scryfall Integration
+
+```javascript
+import { searchScryfall, getCardPrice, scryfall } from 'bigdeck-ai';
+
+// Search for cards
+const cards = await searchScryfall('c:red type:creature cmc<=3', { limit: 10 });
+cards.forEach(card => console.log(card.name));
+
+// Get card price
+const price = await getCardPrice('Lightning Bolt');
+console.log(price);
+// {
+//   name: 'Lightning Bolt',
+//   usd: '0.25',
+//   usd_foil: '2.50',
+//   eur: '0.20',
+//   ...
+// }
+
+// Use Scryfall API directly
+const card = await scryfall.getCard('Sol Ring');
+const commanders = await scryfall.getRandomCommander('WUB');
+```
+
+### Profile Analysis
+
+```javascript
+import { profileAnalyzer } from 'bigdeck-ai';
+
+// Analyze Moxfield profile
+const moxfieldAnalysis = await profileAnalyzer.analyzeMoxfieldProfile('username');
+console.log(moxfieldAnalysis.patterns);
+console.log(moxfieldAnalysis.insights);
+console.log(moxfieldAnalysis.recommendations);
+
+// Analyze MTGGoldfish profile
+const goldfishAnalysis = await profileAnalyzer.analyzeMTGGoldfishProfile('username');
+console.log(goldfishAnalysis.patterns);
+```
+
+### YouTube Learning
+
+```javascript
+import { youtubeLearner } from 'bigdeck-ai';
+
+const result = await youtubeLearner.learnFromVideo(
+  'https://www.youtube.com/watch?v=...'
+);
+
+console.log(result.summary);
+// {
+//   video: 'Muldrotha Deck Tech',
+//   creator: 'MTG Channel',
+//   commander: 'Muldrotha, the Gravetide',
+//   strategy: 'graveyard',
+//   deckAvailable: true
+// }
+```
+
+### Meta Analysis
+
+```javascript
+import { metaAnalyzer } from 'bigdeck-ai';
+
+const meta = await metaAnalyzer.analyzeFormat('commander');
+console.log(meta.topDecks);
+console.log(meta.trends);
+// {
+//   popular: ['Atraxa', 'Kinnan', ...],
+//   emerging: ['New Commander', ...],
+//   declining: ['Old Commander', ...]
+// }
+```
+
+### Recommendation Engine
+
+```javascript
+import { recommendationEngine } from 'bigdeck-ai';
+
+// Track user's deck building history
+recommendationEngine.addToHistory({
+  commander: 'Atraxa, Praetors\' Voice',
+  strategy: 'superfriends',
+  colors: ['W', 'U', 'B', 'G']
+});
+
+// Get personalized recommendations
+const recommendations = recommendationEngine.recommendCommanders();
+console.log(recommendations);
+// [
+//   { name: 'Muldrotha', reason: 'Unexplored sultai colors', score: 85 },
+//   ...
+// ]
+```
+
+## 📦 Module Exports
+
+### Subpath Imports
+
+You can import specific modules using subpath exports:
+
+```javascript
+// System prompt
 import { systemPrompt } from 'bigdeck-ai/prompts';
 
-// Import specific integrations
-import { config } from 'bigdeck-ai/integrations/config';
-import { scryfall } from 'bigdeck-ai/integrations/scryfall';
-import { createGroqLLM } from 'bigdeck-ai/integrations/groq';
-
-// Import specific knowledge modules
+// Knowledge modules
 import { commanderRules } from 'bigdeck-ai/knowledge/commanderRules';
 import { archetypes } from 'bigdeck-ai/knowledge/archetypes';
 import { deckStructure } from 'bigdeck-ai/knowledge/deckStructure';
 import { staples } from 'bigdeck-ai/knowledge/staples';
 
-// Import specific utilities
+// Learning modules
+import { profileAnalyzer } from 'bigdeck-ai/learning/profileAnalyzer';
+import { youtubeLearner } from 'bigdeck-ai/learning/youtubeLearner';
+import { metaAnalyzer } from 'bigdeck-ai/learning/metaAnalyzer';
+import { recommendationEngine } from 'bigdeck-ai/learning/recommendationEngine';
+
+// Utilities
 import { parseColorIdentity } from 'bigdeck-ai/utils/colorIdentity';
 import { calculateManaCurve } from 'bigdeck-ai/utils/curveAnalysis';
 import { generateManaBase } from 'bigdeck-ai/utils/manabase';
+
+// Tool schemas
+import { allToolSchemas } from 'bigdeck-ai/tools/schemas';
+
+// Integrations
+import { scryfall } from 'bigdeck-ai/integrations/scryfall';
 ```
 
-#### Integration Examples
+## 🛠️ OpenAI Function Calling Schemas
 
-**Express API Endpoint:**
+The library includes ready-to-use OpenAI function calling schemas:
+
+- `search_scryfall` - Search for MTG cards
+- `get_card_price` - Get card prices
+- `validate_deck` - Validate Commander deck legality
+- `analyze_moxfield_profile` - Analyze Moxfield user profiles
+- `analyze_mtggoldfish_profile` - Analyze MTGGoldfish profiles
+- `learn_from_youtube` - Extract deck info from YouTube videos
+- `suggest_deck_techs` - Suggest deck tech videos
+- `analyze_format_meta` - Analyze format metagame
+
+Example usage:
+
+```javascript
+import { toolSchemasByName } from 'bigdeck-ai';
+
+// Use individual schema
+const tools = [
+  toolSchemasByName.search_scryfall,
+  toolSchemasByName.validate_deck
+];
+
+// Or use all schemas
+import { allToolSchemas } from 'bigdeck-ai';
+const response = await openai.chat.completions.create({
+  tools: allToolSchemas,
+  // ...
+});
+```
+
+## 🏗️ Project Structure
+
+```
+bigdeck-ai/
+├── index.js                    # Main exports
+├── package.json                # Minimal dependencies
+├── README.md                   # This file
+├── src/
+│   ├── prompts/
+│   │   └── systemPrompt.js     # AI system prompt
+│   ├── knowledge/
+│   │   ├── archetypes.js       # Deck archetypes
+│   │   ├── commanderRules.js   # Format rules & ban list
+│   │   ├── deckStructure.js    # Deck building guidelines
+│   │   └── staples.js          # Format staples by color
+│   ├── learning/
+│   │   ├── metaAnalyzer.js     # Format meta analysis
+│   │   ├── profileAnalyzer.js  # User profile analysis
+│   │   ├── recommendationEngine.js  # Personalized recommendations
+│   │   └── youtubeLearner.js   # YouTube video learning
+│   ├── tools/
+│   │   └── schemas.js          # OpenAI function calling schemas
+│   ├── utils/
+│   │   ├── colorIdentity.js    # Color identity validation
+│   │   ├── curveAnalysis.js    # Mana curve analysis
+│   │   └── manabase.js         # Mana base calculations
+│   └── integrations/
+│       ├── config.js           # Configuration
+│       ├── scryfall.js         # Scryfall API wrapper
+│       ├── moxfield.js         # Moxfield API client
+│       ├── mtggoldfish.js      # MTGGoldfish scraper
+│       └── youtube.js          # YouTube parser
+```
+
+## 🎯 Use Cases
+
+### Building an AI Deck Builder
+
+```javascript
+import OpenAI from 'openai';
+import { 
+  systemPrompt, 
+  allToolSchemas,
+  searchScryfall,
+  validateDeckColorIdentity 
+} from 'bigdeck-ai';
+
+const openai = new OpenAI();
+
+// Your AI deck building logic here
+const response = await openai.chat.completions.create({
+  model: "gpt-4-turbo-preview",
+  messages: [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt }
+  ],
+  tools: allToolSchemas
+});
+
+// Handle tool calls
+if (response.choices[0].message.tool_calls) {
+  for (const toolCall of response.choices[0].message.tool_calls) {
+    if (toolCall.function.name === 'search_scryfall') {
+      const args = JSON.parse(toolCall.function.arguments);
+      const cards = await searchScryfall(args.query, { limit: args.limit });
+      // Process cards...
+    }
+  }
+}
+```
+
+### Deck Validation API
+
 ```javascript
 import express from 'express';
-import { createDeckBuilderAgent } from 'bigdeck-ai';
+import { validateDeckColorIdentity, isCardBanned } from 'bigdeck-ai';
 
 const app = express();
 app.use(express.json());
 
-// Initialize agent once at startup
-let agent;
+app.post('/api/validate-deck', (req, res) => {
+  const { commander, decklist } = req.body;
+  
+  // Check for banned cards
+  const banned = decklist.filter(card => isCardBanned(card));
+  
+  // Validate color identity
+  const colorValidation = validateDeckColorIdentity(commander, decklist);
+  
+  res.json({
+    valid: banned.length === 0 && colorValidation.isValid,
+    bannedCards: banned,
+    colorViolations: colorValidation.violations
+  });
+});
 
-async function startServer() {
-  try {
-    agent = await createDeckBuilderAgent({
-      apiKey: process.env.GROQ_API_KEY
-    });
-    console.log('Agent initialized');
-
-    app.post('/api/build-deck', async (req, res) => {
-      try {
-        if (!agent) {
-          return res.status(503).json({ error: 'Agent not ready' });
-        }
-        
-        const { commander, strategy, budget } = req.body;
-        const prompt = `Build a ${strategy} deck with ${commander} under $${budget}`;
-        const deck = await agent.buildDeck(prompt);
-        
-        res.json({ deck });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    app.listen(3000, () => {
-      console.log('Server listening on port 3000');
-    });
-  } catch (error) {
-    console.error('Failed to initialize agent:', error);
-    process.exit(1);
-  }
-}
-
-startServer();
+app.listen(3000);
 ```
 
-**React Frontend:**
+### Personal Deck Advisor
+
 ```javascript
-import { useState } from 'react';
+import { 
+  profileAnalyzer, 
+  recommendationEngine,
+  metaAnalyzer 
+} from 'bigdeck-ai';
 
-function DeckBuilder() {
-  const [response, setResponse] = useState('');
-  const [loading, setLoading] = useState(false);
-  
-  const buildDeck = async () => {
-    setLoading(true);
-    try {
-      // Call your backend API instead of using the key in the frontend
-      const payload = {
-        commander: "Krenko, Mob Boss",
-        strategy: "goblin tribal",
-        budget: 100
-      };
-      
-      const res = await fetch('/api/build-deck', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      const data = await res.json();
-      setResponse(data.deck || JSON.stringify(data, null, 2));
-    } catch (error) {
-      setResponse(`Error: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  return (
-    <div>
-      <button onClick={buildDeck} disabled={loading}>
-        {loading ? 'Building...' : 'Build Deck'}
-      </button>
-      <pre>{response}</pre>
-    </div>
-  );
-}
-```
+// Analyze user's brewing patterns
+const profile = await profileAnalyzer.analyzeMoxfieldProfile('username');
 
-### CLI Usage
+// Get meta insights
+const meta = await metaAnalyzer.analyzeFormat('commander');
 
-### Interactive Chat Mode (Default)
+// Generate personalized recommendations
+const recommendations = recommendationEngine.recommendCommanders();
 
-Start an interactive conversation with the AI deck builder:
-
-```bash
-npm start chat
-# or
-npm run chat
-# or
-bigdeck chat
-```
-
-**Example interaction:**
-```
-🃏 BigDeck AI - Commander Deck Builder
-Using: Groq (Llama 3 70B)
-
-You: Build me a budget Atraxa superfriends deck under $100
-
-AI: I'd be happy to help you build a budget Atraxa, Praetors' Voice 
-superfriends deck! Here's my recommendation...
-
-[Generates 100-card deck list with explanations]
-```
-
-### Build a Specific Deck
-
-Build a deck with a specific commander and strategy:
-
-```bash
-npm run build -- --commander "Atraxa, Praetors' Voice" --strategy "superfriends"
-npm run build -- --commander "Krenko, Mob Boss" --strategy "goblin tribal" --budget 150
-```
-
-### Suggest Commanders
-
-Get commander suggestions based on colors and theme:
-
-```bash
-bigdeck suggest --colors "WUB" --theme "control"
-bigdeck suggest --colors "RG" --theme "aggro"
-```
-
-### Analyze a Deck
-
-Analyze an existing deck list:
-
-```bash
-bigdeck analyze --file my-deck.txt
-```
-
-### Analyze Player Profiles
-
-Learn from Moxfield or MTGGoldfish profiles to understand brewing patterns:
-
-```bash
-# Analyze Moxfield profile
-bigdeck analyze-profile --moxfield <username>
-
-# Analyze MTGGoldfish profile
-bigdeck analyze-profile --goldfish <username>
-```
-
-**Example output:**
-```
-🃏 Profile Analysis
-
-Platform: Moxfield
-Username: example_player
-Total Decks: 23
-
-Insights:
-  • Primary format: commander
-  • Most played commander: Atraxa, Praetors' Voice (3 decks)
-  • Favorite color combination: Blue/Black/Green (5 decks)
-
-Recommendations:
-  • Try exploring Red or White colors
-  • Consider exploring different archetypes
-```
-
-### Learn from YouTube Videos
-
-Extract deck information and strategy from Magic YouTube videos:
-
-```bash
-bigdeck learn --youtube "https://www.youtube.com/watch?v=..."
-```
-
-The AI will extract:
-- Video title and creator
-- Commander name (if detected)
-- Strategy type (aggro, control, combo, etc.)
-- Linked decklists (Moxfield, Archidekt, etc.)
-
-### Meta Analysis
-
-Analyze the current metagame for any format:
-
-```bash
-# Commander meta (default)
-bigdeck meta --format commander
-
-# Other formats
-bigdeck meta --format modern
-bigdeck meta --format standard
-```
-
-**Example output:**
-```
-🃏 Meta Analysis
-
-Format: commander
-Total Decks Analyzed: 50
-
-Summary:
-  • Analyzed 50 meta decks
-  • Most played: Atraxa, Praetors' Voice (8.5% of meta)
-
-Top Meta Decks:
-  1. Atraxa, Praetors' Voice (8.5%)
-  2. Kinnan, Bonder Prodigy (7.2%)
-  3. Edgar Markov (6.8%)
+console.log('Based on your profile and current meta:');
+recommendations.forEach(rec => {
+  console.log(`- ${rec.name}: ${rec.reason}`);
+});
 ```
 
 ## ⚙️ Configuration
 
-### Environment Variables
-
-Edit `.env` to configure the application:
+Some modules require environment variables:
 
 ```bash
-# Required: Choose your LLM provider
-LLM_PROVIDER=groq
+# Optional: For Scryfall API (uses defaults if not set)
+SCRYFALL_API_URL=https://api.scryfall.com
 
-# Add your API key
-GROQ_API_KEY=your-key-here
+# Optional: For profile/meta analysis features
+# (These integrations work with public APIs, no keys needed)
 ```
-
-### Supported LLM Providers
-
-| Provider | Speed | Cost | Setup |
-|----------|-------|------|-------|
-| **Groq** (default) | ⚡ Very Fast (~300 tokens/sec) | 💚 Free | Get key at console.groq.com |
-| OpenAI | 🔵 Fast | 💰 Paid | Requires OpenAI API key |
-| Anthropic | 🔵 Fast | 💰 Paid | Requires Anthropic API key |
-| Ollama | 🟢 Medium | 💚 Free | Requires local Ollama installation |
-
-## 🏗️ Architecture
-
-```
-BigDeckApp/
-├── index.js                     # Main module entrypoint (for npm usage)
-├── src/
-│   ├── index.js                 # Main CLI entry point
-│   ├── agent/
-│   │   ├── DeckBuilderAgent.js  # Core AI agent logic
-│   │   ├── prompts/
-│   │   │   └── systemPrompt.js  # Commander expertise prompt
-│   │   └── tools/
-│   │       ├── searchInventory.js     # Search user inventory
-│   │       ├── getCardInfo.js         # Fetch from Scryfall
-│   │       ├── validateDeck.js        # Validate legality
-│   │       ├── profileAnalysis.js     # Profile analysis tools
-│   │       ├── youtubeLearning.js     # YouTube learning tools
-│   │       ├── metaAnalysis.js        # Meta analysis tools
-│   │       └── index.js               # Tool exports
-│   ├── integrations/
-│   │   ├── bigDeckApi.js        # BigDeckAppV3 API client
-│   │   ├── scryfall.js          # Scryfall API wrapper
-│   │   ├── moxfield.js          # Moxfield API client
-│   │   ├── mtggoldfish.js       # MTGGoldfish scraper
-│   │   ├── youtube.js           # YouTube video parser
-│   │   ├── groq.js              # Groq LLM setup
-│   │   └── config.js            # API configuration
-│   ├── learning/
-│   │   ├── profileAnalyzer.js   # User profile analysis
-│   │   ├── youtubeLearner.js    # YouTube video learning
-│   │   ├── metaAnalyzer.js      # Format meta analysis
-│   │   └── recommendationEngine.js  # Personalized recommendations
-│   ├── knowledge/
-│   │   ├── commanderRules.js    # Format rules & ban list
-│   │   ├── archetypes.js        # Deck archetypes
-│   │   ├── deckStructure.js     # Card ratio guidelines
-│   │   └── staples.js           # Format staples by color
-│   └── utils/
-│       ├── manabase.js          # Mana base calculations
-│       ├── curveAnalysis.js     # CMC curve analysis
-│       └── colorIdentity.js     # Color identity validation
-```
-
-## 📦 Module Exports
-
-When importing as an npm module, you have access to:
-
-### Core Agent
-- `DeckBuilderAgent` - Main agent class
-- `createDeckBuilderAgent()` - Factory function to create and initialize agent
-
-### Agent Tools
-- `createSearchInventoryTool()`
-- `createGetCardInfoTool()`
-- `createValidateDeckTool()`
-- `getAllTools()`
-
-### Integrations
-- `config` - Configuration object
-- `validateConfig()` - Validate configuration
-- `scryfall` - Scryfall API client
-- `createGroqLLM()` - Create Groq LLM instance
-- `GROQ_MODELS` - Available Groq models
-
-### Knowledge Base
-- `commanderRules` - Format rules and ban list
-- `isCardBanned()` - Check if card is banned
-- `getFormattedRules()` - Get formatted rules text
-- `archetypes` - Deck archetypes
-- `getArchetype()` - Get archetype by name
-- `getArchetypesForColors()` - Filter archetypes by colors
-- `deckStructure` - Deck structure guidelines
-- `getStructureForStrategy()` - Get structure for strategy
-- `validateDeckStructure()` - Validate deck structure
-- `staples` - Format staples by color
-- `getStaplesForColors()` - Get staples for color identity
-- `getEssentialStaples()` - Get essential staples
-
-### Utilities
-- `parseColorIdentity()` - Parse color identity
-- `getColorIdentityString()` - Get color identity as string
-- `isValidForCommander()` - Check color identity validity
-- `getColorCombinationName()` - Get color combination name
-- `calculateColorDistribution()` - Calculate color distribution
-- `calculateManaCurve()` - Calculate mana curve
-- `analyzeManaCurve()` - Analyze mana curve with recommendations
-- `generateManaBase()` - Generate mana base recommendations
-- `calculateLandCount()` - Calculate recommended land count
-
-### System Prompt
-- `systemPrompt` - The AI agent's system prompt (for customization)
-
-## 🎯 Features Deep Dive
-
-### Commander Format Knowledge
-
-The AI agent has deep knowledge of:
-- **Format Rules**: 100-card singleton, color identity, commander tax, etc.
-- **Current Ban List**: Up-to-date with 2024 ban list
-- **Deck Building Theory**: 8x8 theory, mana curve optimization, card ratios
-- **Meta Awareness**: Power level assessment (1-10 scale), current meta trends
-- **Archetypes**: Aggro, Control, Combo, Tribal, Superfriends, Aristocrats, Voltron, and more
-- **Learning Capabilities**: Analyzes external profiles and videos to improve recommendations
-
-### Recommended Deck Structure
-
-The agent follows these guidelines:
-- **35-38 lands** (adjusted for strategy)
-- **10-12 ramp sources** (Sol Ring, signets, ramp spells)
-- **10+ card draw sources** (essential for long games)
-- **10-12 removal pieces** (single target + board wipes)
-- **Strategy-specific slots** (varies by archetype)
-
-### Supported Archetypes
-
-- **Aggro**: Fast, creature-based strategies
-- **Control**: Counter spells and removal
-- **Combo**: Win through card combinations
-- **Midrange**: Value and efficient threats
-- **Tribal**: Creature type synergies
-- **Superfriends**: Planeswalker-focused
-- **Aristocrats**: Sacrifice and death triggers
-- **Voltron**: Single creature focus
-- **Spellslinger**: Instant/sorcery focused
-- **Reanimator**: Graveyard recursion
-- **Group Hug**: Political and friendly
-- **Stax**: Resource denial
-
-### External Learning & Personalization
-
-BigDeck AI can now learn from external sources to provide smarter, personalized recommendations:
-
-#### Profile Analysis
-- **Moxfield Integration**: Analyze user profiles to understand deck building patterns
-  - Identifies favorite commanders and color combinations
-  - Tracks archetype preferences and brewing style
-  - Generates personalized recommendations
-- **MTGGoldfish Integration**: Parse public profiles and deck data
-  - Analyzes meta trends and popular strategies
-  - Compares decks to current metagame
-
-#### YouTube Learning
-- **Video Analysis**: Extract information from deck tech videos
-  - Parses video titles for commander names and strategies
-  - Detects deck links (Moxfield, Archidekt, TappedOut, etc.)
-  - Builds knowledge base from top MTG content creators
-- **Deck Tech Suggestions**: Get recommended videos for specific commanders
-
-#### Meta Analysis
-- **Format Tracking**: Monitor popular decks and strategies
-  - Commander format meta analysis
-  - Identifies trending commanders and archetypes
-  - Tracks deck popularity and meta share
-- **Competitive Insights**: Stay updated on what's winning
-
-#### Enhanced Recommendations
-The AI uses all learned data to:
-- Suggest commanders based on your play history
-- Recommend unexplored color combinations or strategies
-- Identify budget alternatives and upgrade paths
-- Personalize deck building advice to your preferences
-
-## 🔮 Future Roadmap
-
-- [x] **Profile Analysis**: Learn from Moxfield and MTGGoldfish profiles ✓
-- [x] **YouTube Learning**: Extract deck techs from videos ✓
-- [x] **Meta Analysis**: Track popular commanders and strategies ✓
-- [ ] **Web UI**: Browser-based interface
-- [ ] **Discord Bot**: Build decks in Discord servers
-- [ ] **BigDeckAppV3 Integration**: Build decks from your actual collection
-- [ ] **Deck Pricing**: Real-time price data from TCGPlayer/CardKingdom
-- [ ] **Deck Optimization**: Advanced upgrade suggestions with budget alternatives
-- [ ] **Proxy Generator**: Generate printable proxies
-- [ ] **Deck Testing**: Simulate games and goldfish testing
-- [ ] **YouTube API Integration**: Full transcript extraction and deck parsing
 
 ## 🔗 Related Projects
 
-- **BigDeckAppV3**: Card inventory management system (coming soon)
-- **Scryfall**: [scryfall.com](https://scryfall.com) - Magic card database API
-
-## 📝 Example Commands
-
-```bash
-# Start interactive chat
-npm run chat
-
-# Build a specific deck
-npm run build -- --commander "Muldrotha" --strategy "graveyard"
-
-# Budget deck
-npm run build -- --commander "Edric" --strategy "flying men" --budget 50
-
-# Suggest commanders for colors
-bigdeck suggest --colors "GW" --theme "tokens"
-
-# Analyze a deck file
-bigdeck analyze --file decklist.txt
-
-# Analyze Moxfield profile
-bigdeck analyze-profile --moxfield your-username
-
-# Analyze MTGGoldfish profile
-bigdeck analyze-profile --goldfish your-username
-
-# Learn from YouTube deck tech
-bigdeck learn --youtube "https://www.youtube.com/watch?v=..."
-
-# Analyze Commander meta
-bigdeck meta --format commander
-
-# Get help
-bigdeck --help
-```
+- **BigDeckAppV3**: Card inventory management system
+- **Scryfall**: [scryfall.com](https://scryfall.com) - Magic card database
 
 ## 🤝 Contributing
 
@@ -624,6 +472,4 @@ MIT License - see LICENSE file for details
 ## 🙏 Acknowledgments
 
 - **Scryfall**: For their excellent free API
-- **Groq**: For providing free, fast LLM inference
-- **LangChain**: For the agent framework
 - **MTG Community**: For format knowledge and resources

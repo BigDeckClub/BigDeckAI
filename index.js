@@ -1,53 +1,27 @@
 /**
- * BigDeck AI - Commander Deck Builder
- * Main module entrypoint for npm/library usage
+ * BigDeck AI - MTG Commander Knowledge & Utilities Library
  * 
- * This file exports all core components for use in frontend applications,
- * API servers, and other JavaScript/Node.js projects.
+ * A lightweight library providing MTG Commander knowledge, utilities,
+ * and OpenAI-compatible tool schemas for AI-powered deck building.
  * 
  * @example
- * // Import as ES module
- * import { DeckBuilderAgent, createDeckBuilderAgent } from 'bigdeck-ai';
+ * // Import system prompt
+ * import { systemPrompt } from 'bigdeck-ai';
  * 
- * // Create and use agent
- * const agent = await createDeckBuilderAgent({ 
- *   apiKey: process.env.GROQ_API_KEY,
- *   temperature: 0.7
- * });
- * const response = await agent.chat('Build me a cEDH Atraxa deck');
+ * // Import knowledge
+ * import { isCardBanned, archetypes } from 'bigdeck-ai';
+ * 
+ * // Import utilities
+ * import { validateDeckColorIdentity, calculateManaCurve } from 'bigdeck-ai';
+ * 
+ * // Import tool schemas for OpenAI function calling
+ * import { allToolSchemas } from 'bigdeck-ai';
  */
-
-// Core Agent
-export { 
-  DeckBuilderAgent, 
-  createDeckBuilderAgent 
-} from './src/agent/DeckBuilderAgent.js';
-
-// Agent Tools
-export {
-  createSearchInventoryTool,
-  createGetCardInfoTool,
-  createValidateDeckTool,
-  getAllTools
-} from './src/agent/tools/index.js';
 
 // System Prompt
 export { 
   systemPrompt 
-} from './src/agent/prompts/systemPrompt.js';
-
-// Integrations
-export { 
-  config, 
-  validateConfig 
-} from './src/integrations/config.js';
-export { 
-  scryfall 
-} from './src/integrations/scryfall.js';
-export { 
-  createGroqLLM, 
-  GROQ_MODELS 
-} from './src/integrations/groq.js';
+} from './src/prompts/systemPrompt.js';
 
 // Knowledge Base
 export { 
@@ -70,6 +44,12 @@ export {
   getStaplesForColors,
   getEssentialStaples
 } from './src/knowledge/staples.js';
+
+// Learning Modules
+export { profileAnalyzer } from './src/learning/profileAnalyzer.js';
+export { youtubeLearner } from './src/learning/youtubeLearner.js';
+export { metaAnalyzer } from './src/learning/metaAnalyzer.js';
+export { recommendationEngine } from './src/learning/recommendationEngine.js';
 
 // Utilities
 export { 
@@ -99,5 +79,23 @@ export {
   calculateTotalManaSources
 } from './src/utils/manabase.js';
 
-// Default export for convenience
-export { DeckBuilderAgent as default } from './src/agent/DeckBuilderAgent.js';
+// Tool Schemas (OpenAI function calling)
+export {
+  allToolSchemas,
+  toolSchemasByName,
+  searchScryfallSchema,
+  getCardPriceSchema,
+  validateDeckSchema,
+  analyzeMoxfieldProfileSchema,
+  analyzeMTGGoldfishProfileSchema,
+  learnFromYoutubeSchema,
+  suggestDeckTechsSchema,
+  analyzeFormatMetaSchema
+} from './src/tools/schemas.js';
+
+// Integrations
+export { 
+  scryfall,
+  searchScryfall,
+  getCardPrice
+} from './src/integrations/scryfall.js';

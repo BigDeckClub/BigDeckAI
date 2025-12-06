@@ -1,65 +1,28 @@
 {
   "name": "bigdeck-ai",
   "version": "1.0.0",
-  "description": "AI-powered Commander deck building agent",
+  "description": "MTG Commander knowledge base, utilities, and OpenAI-compatible tool schemas",
   "main": "index.js",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./index.js"
-    },
-    "./agent": {
-      "import": "./src/agent/DeckBuilderAgent.js"
-    },
-    "./tools": {
-      "import": "./src/agent/tools/index.js"
-    },
-    "./prompts": {
-      "import": "./src/agent/prompts/systemPrompt.js"
-    },
-    "./integrations/config": {
-      "import": "./src/integrations/config.js"
-    },
-    "./integrations/scryfall": {
-      "import": "./src/integrations/scryfall.js"
-    },
-    "./integrations/groq": {
-      "import": "./src/integrations/groq.js"
-    },
-    "./knowledge/commanderRules": {
-      "import": "./src/knowledge/commanderRules.js"
-    },
-    "./knowledge/archetypes": {
-      "import": "./src/knowledge/archetypes.js"
-    },
-    "./knowledge/deckStructure": {
-      "import": "./src/knowledge/deckStructure.js"
-    },
-    "./knowledge/staples": {
-      "import": "./src/knowledge/staples.js"
-    },
-    "./utils/colorIdentity": {
-      "import": "./src/utils/colorIdentity.js"
-    },
-    "./utils/curveAnalysis": {
-      "import": "./src/utils/curveAnalysis.js"
-    },
-    "./utils/manabase": {
-      "import": "./src/utils/manabase.js"
-    }
-  },
-  "bin": {
-    "bigdeck": "./src/index.js"
-  },
-  "scripts": {
-    "start": "node src/index.js",
-    "chat": "node src/index.js chat",
-    "build": "node src/index.js build"
+    ".": "./index.js",
+    "./prompts": "./src/prompts/systemPrompt.js",
+    "./knowledge/commanderRules": "./src/knowledge/commanderRules.js",
+    "./knowledge/archetypes": "./src/knowledge/archetypes.js",
+    "./knowledge/deckStructure": "./src/knowledge/deckStructure.js",
+    "./knowledge/staples": "./src/knowledge/staples.js",
+    "./learning/profileAnalyzer": "./src/learning/profileAnalyzer.js",
+    "./learning/youtubeLearner": "./src/learning/youtubeLearner.js",
+    "./learning/metaAnalyzer": "./src/learning/metaAnalyzer.js",
+    "./learning/recommendationEngine": "./src/learning/recommendationEngine.js",
+    "./utils/colorIdentity": "./src/utils/colorIdentity.js",
+    "./utils/curveAnalysis": "./src/utils/curveAnalysis.js",
+    "./utils/manabase": "./src/utils/manabase.js",
+    "./tools/schemas": "./src/tools/schemas.js",
+    "./integrations/scryfall": "./src/integrations/scryfall.js"
   },
   "files": [
     "index.js",
-    "examples.js",
-    "NPM_MODULE.md",
     "src/",
     "README.md",
     "LICENSE"
@@ -79,9 +42,10 @@
     "edh",
     "ai",
     "deck-builder",
-    "langchain",
     "npm-module",
-    "library"
+    "library",
+    "openai",
+    "function-calling"
   ],
   "author": "BigDeckClub",
   "license": "MIT",
@@ -89,13 +53,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@langchain/core": "^0.3.0",
-    "@langchain/groq": "^0.1.0",
-    "chalk": "^5.3.0",
-    "commander": "^12.0.0",
     "dotenv": "^16.4.0",
-    "inquirer": "^9.2.0",
-    "langchain": "^0.3.0",
     "zod": "^3.25.76"
   }
 }

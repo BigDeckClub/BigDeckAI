@@ -164,9 +164,59 @@ class ScryfallAPI {
     
     return results.data ? results.data.slice(0, limit) : [];
   }
+
+  /**
+   * Get card pricing information
+   * @param {string} cardName - Card name
+   * @returns {Promise<Object>} Price information
+   */
+  async getCardPrice(cardName) {
+    try {
+      const card = await this.getCard(cardName);
+      
+      return {
+        name: card.name,
+        usd: card.prices?.usd || null,
+        usd_foil: card.prices?.usd_foil || null,
+        eur: card.prices?.eur || null,
+        tix: card.prices?.tix || null,
+        set: card.set_name,
+        set_code: card.set,
+        rarity: card.rarity,
+        purchase_uris: card.purchase_uris || {},
+      };
+    } catch (error) {
+      throw new Error(`Failed to get price for ${cardName}: ${error.message}`);
+    }
+  }
 }
 
 // Export singleton instance
 export const scryfall = new ScryfallAPI();
+
+/**
+ * Search for cards (convenience function)
+ * @param {string} query - Search query
+ * @param {Object} options - Search options
+ * @returns {Promise<Array>} Array of card objects
+ */
+export async function searchScryfall(query, options = {}) {
+  try {
+    const results = await scryfall.searchCards(query, options);
+    return results.data || [];
+  } catch (error) {
+    console.error('Scryfall search failed:', error.message);
+    return [];
+  }
+}
+
+/**
+ * Get card price (convenience function)
+ * @param {string} cardName - Card name
+ * @returns {Promise<Object>} Price information
+ */
+export async function getCardPrice(cardName) {
+  return scryfall.getCardPrice(cardName);
+}
 
 export default scryfall;
