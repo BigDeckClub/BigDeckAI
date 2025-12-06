@@ -468,6 +468,256 @@ export const getSalesSchema = {
   }
 };
 
+// ============ NEW TOOL SCHEMAS ============
+
+/**
+ * Assess deck power level
+ */
+export const assessPowerLevelSchema = {
+  type: "function",
+  function: {
+    name: "assess_power_level",
+    description: "Analyze a deck's power level on a 1-10 scale with detailed breakdown of factors like fast mana, tutors, interaction, and mana base quality.",
+    parameters: {
+      type: "object",
+      properties: {
+        decklist: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              type: { type: "string" },
+              cmc: { type: "number" },
+            },
+          },
+          description: "Array of card objects with name, type, and cmc properties"
+        }
+      },
+      required: ["decklist"]
+    }
+  }
+};
+
+/**
+ * Find card synergies
+ */
+export const findSynergiesSchema = {
+  type: "function",
+  function: {
+    name: "find_synergies",
+    description: "Find all synergy pairs and combos in a decklist, including infinite combos and card interactions.",
+    parameters: {
+      type: "object",
+      properties: {
+        decklist: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+            },
+          },
+          description: "Array of card objects with name property"
+        }
+      },
+      required: ["decklist"]
+    }
+  }
+};
+
+/**
+ * Suggest cards with budget constraints
+ */
+export const suggestWithBudgetSchema = {
+  type: "function",
+  function: {
+    name: "suggest_with_budget",
+    description: "Get budget-aware card suggestions and alternatives for expensive cards in a deck.",
+    parameters: {
+      type: "object",
+      properties: {
+        decklist: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              prices: { type: "object" },
+            },
+          },
+          description: "Array of card objects with name and price data"
+        },
+        budgetTier: {
+          type: "string",
+          enum: ["budget", "moderate", "optimized", "noLimit"],
+          description: "Budget tier: budget ($100), moderate ($300), optimized ($750), or noLimit"
+        }
+      },
+      required: ["decklist"]
+    }
+  }
+};
+
+/**
+ * Analyze deck ratios
+ */
+export const analyzeDeckRatiosSchema = {
+  type: "function",
+  function: {
+    name: "analyze_deck_ratios",
+    description: "Analyze card draw, ramp, and interaction ratios in a deck and suggest improvements based on archetype.",
+    parameters: {
+      type: "object",
+      properties: {
+        decklist: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              type: { type: "string" },
+              oracle_text: { type: "string" },
+            },
+          },
+          description: "Array of card objects"
+        },
+        archetype: {
+          type: "string",
+          enum: ["aggro", "midrange", "control", "combo", "tribal", "voltron"],
+          description: "Deck archetype for ratio recommendations"
+        },
+        colors: {
+          type: "array",
+          items: { type: "string" },
+          description: "Color identity (e.g., ['W', 'U', 'B'])"
+        }
+      },
+      required: ["decklist"]
+    }
+  }
+};
+
+/**
+ * Detect win conditions
+ */
+export const detectWinConditionsSchema = {
+  type: "function",
+  function: {
+    name: "detect_win_conditions",
+    description: "Identify all win conditions in a deck including combat, combo, alternate win cons, and assess redundancy.",
+    parameters: {
+      type: "object",
+      properties: {
+        decklist: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              type: { type: "string" },
+            },
+          },
+          description: "Array of card objects"
+        }
+      },
+      required: ["decklist"]
+    }
+  }
+};
+
+/**
+ * Get EDHREC data
+ */
+export const getEdhrecDataSchema = {
+  type: "function",
+  function: {
+    name: "get_edhrec_data",
+    description: "Get popular cards, themes, and synergy data for a commander from EDHREC.",
+    parameters: {
+      type: "object",
+      properties: {
+        commanderName: {
+          type: "string",
+          description: "Name of the commander to look up"
+        },
+        category: {
+          type: "string",
+          enum: ["all", "themes", "topCards", "synergies", "saltScore"],
+          description: "Type of data to retrieve"
+        }
+      },
+      required: ["commanderName"]
+    }
+  }
+};
+
+/**
+ * Adapt to playgroup meta
+ */
+export const adaptToPlaygroupSchema = {
+  type: "function",
+  function: {
+    name: "adapt_to_playgroup",
+    description: "Adapt deck recommendations based on local playgroup meta, common strategies, and hated cards.",
+    parameters: {
+      type: "object",
+      properties: {
+        playgroupProfile: {
+          type: "object",
+          properties: {
+            powerLevel: { type: "number" },
+            commonStrategies: { type: "array", items: { type: "string" } },
+            frequentCommanders: { type: "array", items: { type: "string" } },
+            hatedCards: { type: "array", items: { type: "string" } },
+          },
+          description: "Playgroup meta profile"
+        },
+        recommendations: {
+          type: "array",
+          items: { type: "object" },
+          description: "Card recommendations to adapt"
+        }
+      },
+      required: ["playgroupProfile", "recommendations"]
+    }
+  }
+};
+
+/**
+ * Analyze interaction package
+ */
+export const analyzeInteractionSchema = {
+  type: "function",
+  function: {
+    name: "analyze_interaction",
+    description: "Analyze removal, counterspells, and protection in a deck. Score the interaction package and identify gaps.",
+    parameters: {
+      type: "object",
+      properties: {
+        decklist: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              type: { type: "string" },
+              oracle_text: { type: "string" },
+            },
+          },
+          description: "Array of card objects"
+        },
+        colors: {
+          type: "array",
+          items: { type: "string" },
+          description: "Color identity for suggestions"
+        }
+      },
+      required: ["decklist"]
+    }
+  }
+};
+
 /**
  * All tool schemas as an array for easy consumption
  */
@@ -481,6 +731,15 @@ export const allToolSchemas = [
   learnFromYoutubeSchema,
   suggestDeckTechsSchema,
   analyzeFormatMetaSchema,
+  // New analysis tools
+  assessPowerLevelSchema,
+  findSynergiesSchema,
+  suggestWithBudgetSchema,
+  analyzeDeckRatiosSchema,
+  detectWinConditionsSchema,
+  getEdhrecDataSchema,
+  adaptToPlaygroupSchema,
+  analyzeInteractionSchema,
   // Write tools
   addCardToInventorySchema,
   removeCardFromInventorySchema,
@@ -507,6 +766,14 @@ export const readToolSchemas = [
   learnFromYoutubeSchema,
   suggestDeckTechsSchema,
   analyzeFormatMetaSchema,
+  assessPowerLevelSchema,
+  findSynergiesSchema,
+  suggestWithBudgetSchema,
+  analyzeDeckRatiosSchema,
+  detectWinConditionsSchema,
+  getEdhrecDataSchema,
+  adaptToPlaygroupSchema,
+  analyzeInteractionSchema,
   searchInventorySchema,
   getDecksSchema,
   getSalesSchema
@@ -539,6 +806,15 @@ export const toolSchemasByName = {
   learn_from_youtube: learnFromYoutubeSchema,
   suggest_deck_techs: suggestDeckTechsSchema,
   analyze_format_meta: analyzeFormatMetaSchema,
+  // New analysis tools
+  assess_power_level: assessPowerLevelSchema,
+  find_synergies: findSynergiesSchema,
+  suggest_with_budget: suggestWithBudgetSchema,
+  analyze_deck_ratios: analyzeDeckRatiosSchema,
+  detect_win_conditions: detectWinConditionsSchema,
+  get_edhrec_data: getEdhrecDataSchema,
+  adapt_to_playgroup: adaptToPlaygroupSchema,
+  analyze_interaction: analyzeInteractionSchema,
   // Write tools
   add_card_to_inventory: addCardToInventorySchema,
   remove_card_from_inventory: removeCardFromInventorySchema,
