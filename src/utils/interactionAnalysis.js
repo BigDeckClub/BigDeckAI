@@ -85,7 +85,7 @@ export const interactionCategories = {
       'Disenchant',
       'Assassin\'s Trophy',
       'Abrupt Decay',
-      'Rec Sage',
+      'Reclamation Sage',
       'Caustic Caterpillar',
     ],
   },
@@ -172,7 +172,7 @@ export function analyzeInteraction(decklist) {
     if (spotRemovalSpells.some(spell => name.includes(spell.toLowerCase())) ||
         ((text.includes('destroy') || text.includes('exile')) && 
          text.includes('target') && 
-         !text.includes('all'))) {
+         !text.includes('destroy all') && !text.includes('exile all'))) {
       breakdown.spotRemoval.push({
         name: card.name,
         cmc: card.cmc,

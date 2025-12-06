@@ -4,6 +4,25 @@
  */
 
 /**
+ * Minimum similarity threshold for deck recommendations
+ * Only decks with >30% similarity are considered
+ */
+const MINIMUM_SIMILARITY_THRESHOLD = 0.3;
+
+/**
+ * Theme detection thresholds
+ * Minimum card counts required to detect specific deck themes
+ */
+const THEME_THRESHOLDS = {
+  tribal: 10,        // Minimum creatures of a tribe to detect tribal theme
+  wheels: 3,         // Minimum wheel effects
+  tokens: 10,        // Minimum token-related cards
+  superfriends: 10,  // Minimum planeswalkers
+  counters: 8,       // Minimum counter-related cards
+  aristocrats: 8,    // Minimum sacrifice-related cards
+};
+
+/**
  * Extract features from a decklist for similarity comparison
  * @param {Array} decklist - Array of card objects
  * @returns {Object} Feature vector representing the deck
@@ -86,25 +105,25 @@ function detectThemes(decklist) {
   const tribes = ['elf', 'goblin', 'zombie', 'vampire', 'dragon', 'wizard', 'merfolk', 'soldier'];
   for (const tribe of tribes) {
     const count = cardTypes.filter(type => type.includes(tribe)).length;
-    if (count >= 10) {
+    if (count >= THEME_THRESHOLDS.tribal) {
       themes.push(`tribal_${tribe}`);
     }
   }
 
   // Detect strategy themes
-  if (cardNames.filter(name => name.includes('wheel')).length >= 3) {
+  if (cardNames.filter(name => name.includes('wheel')).length >= THEME_THRESHOLDS.wheels) {
     themes.push('wheels');
   }
-  if (cardNames.filter(name => name.includes('token') || name.includes('create')).length >= 10) {
+  if (cardNames.filter(name => name.includes('token') || name.includes('create')).length >= THEME_THRESHOLDS.tokens) {
     themes.push('tokens');
   }
-  if (cardTypes.filter(type => type.includes('planeswalker')).length >= 10) {
+  if (cardTypes.filter(type => type.includes('planeswalker')).length >= THEME_THRESHOLDS.superfriends) {
     themes.push('superfriends');
   }
-  if (cardNames.filter(name => name.includes('counter') || name.includes('+1/+1')).length >= 8) {
+  if (cardNames.filter(name => name.includes('counter') || name.includes('+1/+1')).length >= THEME_THRESHOLDS.counters) {
     themes.push('counters');
   }
-  if (cardNames.filter(name => name.includes('sacrifice') || name.includes('death')).length >= 8) {
+  if (cardNames.filter(name => name.includes('sacrifice') || name.includes('death')).length >= THEME_THRESHOLDS.aristocrats) {
     themes.push('aristocrats');
   }
 
@@ -199,11 +218,21 @@ export function findSimilarDecks(targetDeck, deckDatabase, limit = 10) {
         colorMatch: JSON.stringify(targetFeatures.colorIdentity) === JSON.stringify(deckFeatures.colorIdentity),
       };
     })
-    .filter(item => item.similarity > 0.3) // Only include reasonably similar decks
+    .filter(item => item.similarity > MINIMUM_SIMILARITY_THRESHOLD) // Only include reasonably similar decks
     .sort((a, b) => b.similarity - a.similarity)
     .slice(0, limit);
 
   return similarities;
+}
+
+/**
+ * Check if a card is a basic land
+ * @private
+ * @param {Object} card - Card object
+ * @returns {boolean} True if card is a basic land
+ */
+function isBasicLand(card) {
+  return card.type?.includes('Basic Land') || card.type?.includes('Basic Snow Land');
 }
 
 /**
@@ -223,7 +252,7 @@ export function recommendFromSimilarDecks(targetDeck, deckDatabase, count = 10) 
     const decklist = deck.decklist || [];
     for (const card of decklist) {
       if (existingCards.has(card.name)) continue;
-      if (card.type?.includes('Land') && card.type?.includes('Basic')) continue; // Skip basic lands
+      if (isBasicLand(card)) continue; // Skip basic lands
 
       if (!recommendations.has(card.name)) {
         recommendations.set(card.name, {
@@ -323,7 +352,9 @@ export function trainOnDecklists(decklists) {
     model: {
       themePerformance: themeAverages,
       colorPerformance: colorAverages,
-      averageWinRate: features.reduce((sum, f) => sum + (f.wins / f.games), 0) / features.length,
+      averageWinRate: features.length > 0
+        ? features.reduce((sum, f) => sum + (f.games > 0 ? f.wins / f.games : 0), 0) / features.length
+        : 0,
       totalDecks: decklists.length,
     },
   };

@@ -440,7 +440,8 @@ export function detectInfiniteCombos(decklist) {
         // Handle special cases like "mana rocks"
         if (piece === 'mana rocks') {
           return decklist.some(c => c.type?.includes('Artifact') && 
-                                   c.oracle_text?.toLowerCase().includes('add'));
+                                   c.oracle_text?.toLowerCase().includes('add') &&
+                                   c.oracle_text?.toLowerCase().includes('mana'));
         }
         if (piece === 'any zombie') {
           return decklist.some(c => c.type?.toLowerCase().includes('zombie'));

@@ -19,12 +19,56 @@ export const defaultPlaygroupProfile = {
 };
 
 /**
- * Game result data structure
+ * Module-level game history for backwards compatibility
+ * Note: This is a singleton that persists across module imports.
+ * For isolated state, use createPlaygroupTracker() factory function.
  */
 const gameHistory = [];
 
 /**
- * Record a game result for analysis
+ * Create a playgroup tracker with isolated state
+ * Recommended for applications that need independent tracking instances
+ * @returns {Object} Playgroup tracker with instance-specific methods
+ */
+export function createPlaygroupTracker() {
+  const instanceGameHistory = [];
+  
+  return {
+    recordGameResult: (gameData) => recordGameResultInternal(gameData, instanceGameHistory),
+    analyzePlaygroupMeta: (games) => analyzePlaygroupMetaInternal(games || instanceGameHistory),
+    adaptRecommendations: (recommendations, playgroupProfile) => adaptRecommendations(recommendations, playgroupProfile),
+    suggestMetaCounters: (playgroupProfile, count) => suggestMetaCounters(playgroupProfile, count),
+    getDeckWinRate: (deckName, games) => getDeckWinRate(deckName, games || instanceGameHistory),
+    getGameHistory: () => [...instanceGameHistory],
+    clearGameHistory: () => {
+      instanceGameHistory.splice(0, instanceGameHistory.length);
+      return { message: 'Game history cleared', totalGames: 0 };
+    },
+  };
+}
+
+/**
+ * Internal implementation of recordGameResult
+ * @private
+ */
+function recordGameResultInternal(gameData, historyArray) {
+  const game = {
+    ...gameData,
+    timestamp: new Date().toISOString(),
+    id: `game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+  };
+
+  historyArray.push(game);
+
+  return {
+    message: 'Game recorded successfully',
+    totalGames: historyArray.length,
+    gameId: game.id,
+  };
+}
+
+/**
+ * Record a game result for analysis (module-level)
  * @param {Object} gameData - Game result data
  * @param {string} gameData.deckUsed - Deck/commander used
  * @param {string} gameData.result - 'win', 'loss', 'draw'
@@ -34,27 +78,14 @@ const gameHistory = [];
  * @returns {Object} Updated game history summary
  */
 export function recordGameResult(gameData) {
-  const game = {
-    ...gameData,
-    timestamp: new Date().toISOString(),
-    id: `game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-  };
-
-  gameHistory.push(game);
-
-  return {
-    message: 'Game recorded successfully',
-    totalGames: gameHistory.length,
-    gameId: game.id,
-  };
+  return recordGameResultInternal(gameData, gameHistory);
 }
 
 /**
- * Analyze playgroup meta from game history
- * @param {Array} games - Array of game result objects (defaults to all recorded games)
- * @returns {Object} Playgroup meta analysis
+ * Internal implementation of analyzePlaygroupMeta
+ * @private
  */
-export function analyzePlaygroupMeta(games = gameHistory) {
+function analyzePlaygroupMetaInternal(games) {
   if (!Array.isArray(games) || games.length === 0) {
     return {
       message: 'No game history available',
@@ -154,6 +185,15 @@ export function analyzePlaygroupMeta(games = gameHistory) {
       uniqueCommanders: Object.keys(commanderCounts).length,
     },
   };
+}
+
+/**
+ * Analyze playgroup meta from game history (module-level)
+ * @param {Array} games - Array of game result objects (defaults to all recorded games)
+ * @returns {Object} Playgroup meta analysis
+ */
+export function analyzePlaygroupMeta(games = gameHistory) {
+  return analyzePlaygroupMetaInternal(games);
 }
 
 /**
@@ -431,11 +471,11 @@ export function getGameHistory() {
 }
 
 /**
- * Clear game history
+ * Clear game history (module-level)
  * @returns {Object} Confirmation
  */
 export function clearGameHistory() {
-  gameHistory.length = 0;
+  gameHistory.splice(0, gameHistory.length);
   return {
     message: 'Game history cleared',
     totalGames: 0,
@@ -444,6 +484,7 @@ export function clearGameHistory() {
 
 export default {
   defaultPlaygroupProfile,
+  createPlaygroupTracker,
   recordGameResult,
   analyzePlaygroupMeta,
   adaptRecommendations,

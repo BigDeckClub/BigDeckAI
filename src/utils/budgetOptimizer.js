@@ -328,13 +328,14 @@ export function optimizeDeckForBudget(decklist, targetBudget) {
     const alternatives = findBudgetAlternatives(card.name, 5);
     if (alternatives.length > 0) {
       const bestAlt = alternatives[0];
-      const savings = card.price - 5; // Assume $5 for the replacement
+      const altPrice = parseFloat(bestAlt.price || 5); // Use actual price, fallback to $5
+      const savings = card.price - altPrice;
 
       swaps.push({
         remove: card.name,
         removePrice: card.price,
         add: bestAlt.name,
-        addPrice: 5,
+        addPrice: altPrice,
         savings,
         reason: bestAlt.reason,
       });

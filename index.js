@@ -80,6 +80,7 @@ export {
 } from './src/learning/mlRecommender.js';
 export {
   defaultPlaygroupProfile,
+  createPlaygroupTracker,
   recordGameResult,
   analyzePlaygroupMeta,
   adaptRecommendations,

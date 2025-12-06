@@ -210,7 +210,7 @@ export const synergies = {
     description: 'Life gain and storm win condition',
   },
 
-  'Atraxa, Praetors\' Voice': {
+  "Atraxa, Praetors' Voice": {
     categories: [synergyCategories.COUNTERS, synergyCategories.PLANESWALKERS],
     synergiesWith: [
       'Planeswalkers',

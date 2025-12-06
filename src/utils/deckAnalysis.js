@@ -102,7 +102,7 @@ export function analyzeCardAdvantage(decklist) {
 
     // Identify card draw
     if (cardDrawSpells.some(spell => name.includes(spell.toLowerCase())) ||
-        text.includes('draw') && (text.includes('card') || text.includes('cards'))) {
+        (text.includes('draw') && (text.includes('card') || text.includes('cards')))) {
       cardDrawCards.push({
         name: card.name,
         type: card.type,
@@ -254,25 +254,23 @@ export function analyzeRampPackage(decklist) {
  */
 export function getIdealRatios(archetype, colors = []) {
   const baseRatios = idealRatios[archetype] || idealRatios.midrange;
-  const adjusted = { ...baseRatios };
-
-  // Adjust for colors
-  if (colors.includes('G')) {
-    // Green gets more ramp
-    adjusted.ramp = Math.min(adjusted.ramp + 2, 15);
-  }
-
-  if (colors.includes('U')) {
-    // Blue gets more draw
-    adjusted.draw = Math.min(adjusted.draw + 2, 18);
-  }
-
-  if (colors.includes('W') && colors.includes('U')) {
-    // Azorius gets more interaction
-    adjusted.interaction = Math.min(adjusted.interaction + 2, 18);
-  }
-
-  return adjusted;
+  
+  // Return a new object with adjustments applied functionally
+  return {
+    ...baseRatios,
+    // Green decks benefit from additional ramp sources
+    ramp: colors.includes('G')
+      ? Math.min(baseRatios.ramp + 2, 15)
+      : baseRatios.ramp,
+    // Blue decks need more card draw
+    draw: colors.includes('U')
+      ? Math.min(baseRatios.draw + 2, 18)
+      : baseRatios.draw,
+    // Azorius colors get extra interaction
+    interaction: (colors.includes('W') && colors.includes('U'))
+      ? Math.min(baseRatios.interaction + 2, 18)
+      : baseRatios.interaction,
+  };
 }
 
 /**
@@ -301,7 +299,9 @@ export function suggestRatioImprovements(decklist, archetype = 'midrange', color
         ? ['Rhystic Study', 'Mystic Remora', 'Fact or Fiction']
         : colors.includes('G')
         ? ['Harmonize', 'Beast Whisperer', 'Return of the Wildspeaker']
-        : ['Necropotence', 'Phyrexian Arena', 'Night\'s Whisper'],
+        : colors.includes('B')
+        ? ['Necropotence', 'Phyrexian Arena', 'Night\'s Whisper']
+        : ['Skullclamp', 'Esper Sentinel', 'Mentor of the Meek'],
     });
   }
 

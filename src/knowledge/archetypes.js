@@ -504,7 +504,7 @@ export const archetypes = {
       'Reforge the Soul',
       'Waste Not',
       'Narset, Parter of Veils',
-      'Hullbreacher',
+      'Hullbreacher', // Banned in Commander
       'Smothering Tithe',
     ],
     strengths: ['Disrupts hands', 'Refills hand', 'Graveyard fuel'],
@@ -515,7 +515,7 @@ export const archetypes = {
     examples: [
       'Anje Falkenrath',
       'Nekusar, the Mindrazer',
-      'Leovold, Emissary of Trest',
+      // 'Leovold, Emissary of Trest', // Banned in Commander
     ],
   },
 

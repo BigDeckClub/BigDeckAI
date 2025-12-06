@@ -221,7 +221,7 @@ function assessManaBase(decklist) {
   const premiumCount = countMatchingCards(lands, premiumLands);
   const totalLands = lands.length;
   
-  let quality = 'low';
+  let quality;
   let score = 0;
   
   if (premiumCount >= 10) {
