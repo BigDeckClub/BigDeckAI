@@ -163,7 +163,7 @@ export async function getBudgetAlternatives(cardName, maxPrice = 5) {
   // Mock implementation combining budget alternatives with actual pricing
   
   const alternatives = [
-    { name: 'Budget Option 1', functionallyS similar: 'Similar effect' },
+    { name: 'Budget Option 1', functionallySimilar: 'Similar effect' },
     { name: 'Budget Option 2', functionallySimilar: 'Comparable but slower' },
     { name: 'Budget Option 3', functionallySimilar: 'Budget version' },
   ];
