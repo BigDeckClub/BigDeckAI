@@ -127,6 +127,13 @@ export {
 // Data Store
 export { store } from './src/data/store.js';
 
+// UI Messages
+export {
+  statusMessages,
+  getRandomThinkingMessage,
+  getToolStatusMessage
+} from './src/ui/messages.js';
+
 // Integrations
 export { 
   scryfall,
