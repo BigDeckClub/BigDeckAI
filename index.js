@@ -78,6 +78,13 @@ export {
   analyzeManaRequirements,
   calculateTotalManaSources
 } from './src/utils/manabase.js';
+export {
+  parseDeckList,
+  validateParsedDeck,
+  validateDeckList,
+  removeDuplicates,
+  formatDeckList
+} from './src/utils/deckValidator.js';
 
 // Tool Schemas (OpenAI function calling)
 export {
