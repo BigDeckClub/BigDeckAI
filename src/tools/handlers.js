@@ -107,6 +107,30 @@ export async function addCardToDeck({ deckName, cardName, quantity = 1 }) {
     return { success: false, message: `Card "${cardName}" not found on Scryfall` };
   }
 
+  // Get deck to check format and existing cards
+  const decks = store.getDecks('default');
+  const deck = decks.find(d => d.name.toLowerCase() === deckName.toLowerCase());
+  
+  if (deck && deck.format === 'commander') {
+    // CHECK FOR DUPLICATES (Commander singleton rule)
+    const cardNameLower = cardData.name.toLowerCase();
+    const existingCard = deck.cards?.find(c => 
+      (typeof c === 'string' ? c : c.name || '').toLowerCase() === cardNameLower
+    );
+    
+    // Allow basic lands, reject other duplicates
+    const basicLands = ['plains', 'island', 'swamp', 'mountain', 'forest', 'wastes'];
+    if (existingCard && !basicLands.includes(cardNameLower)) {
+      return { 
+        success: false, 
+        message: `Cannot add ${cardData.name} - already in deck (Commander is singleton format)` 
+      };
+    }
+    
+    // Only add 1 copy for Commander (except basic lands)
+    quantity = basicLands.includes(cardNameLower) ? quantity : 1;
+  }
+
   return store.addCardToDeck('default', deckName, {
     name: cardData.name,
     quantity,
