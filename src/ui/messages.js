@@ -3,6 +3,9 @@
  * Fun, themed messages for the BigDeck AI interface
  */
 
+// AI Display Name
+export const aiName = "Big Deck Daddy";
+
 export const statusMessages = {
   // When AI is processing
   thinking: "Pondering my orbs...",
@@ -45,7 +48,7 @@ export const statusMessages = {
   error: "Something went wrong...",
   
   // Welcome message
-  welcome: "Welcome to BigDeck AI! How can I help you build your Commander deck today?",
+  welcome: "Welcome! I'm Big Deck Daddy, your Commander deck building expert. How can I help you today?",
   
   // Empty state messages
   emptyInventory: "Your inventory is empty. Add some cards to get started!",

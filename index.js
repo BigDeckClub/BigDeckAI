@@ -129,6 +129,7 @@ export { store } from './src/data/store.js';
 
 // UI Messages
 export {
+  aiName,
   statusMessages,
   getRandomThinkingMessage,
   getToolStatusMessage
