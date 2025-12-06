@@ -219,6 +219,14 @@ export {
 // Data Store
 export { store } from './src/data/store.js';
 
+// UI Messages
+export {
+  aiName,
+  statusMessages,
+  getRandomThinkingMessage,
+  getToolStatusMessage
+} from './src/ui/messages.js';
+
 // Integrations
 export { 
   scryfall,
