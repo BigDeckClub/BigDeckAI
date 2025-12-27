@@ -276,6 +276,13 @@ export {
   getToolStatusMessage
 } from './src/ui/messages.js';
 
+// Orb Visuals
+export {
+  basicLandOrbs,
+  orbIntensityLevels,
+  getOrbState
+} from './src/ui/orb.js';
+
 // =============================================================================
 // INTEGRATIONS
 // =============================================================================
